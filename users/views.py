@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 #======= import models ===========
 from .models import UserEx
  
@@ -11,8 +12,22 @@ from .models import UserEx
 def home(request):
     return render(request, "index-5.html")
 #===== Login =====
+@csrf_exempt
 def signin(request):
-    return render(request,"login.html")
+    if request.method=="POST":
+        email=request.POST["email"]
+        password=request.POST["password"]
+        user_= authenticate(request, email=email,password=password)
+        print(user_)
+        if user_ is not None:
+            messages.success(request," You are logged in")
+            login(request,user_)
+            return redirect('home')
+        else:
+            messages.error(request,"Invalid credentials")
+            return redirect('about')
+    return render(request,'login.html')
+
 #==== register form =====
 @csrf_exempt
 def register(request):
@@ -28,10 +43,17 @@ def register(request):
         user.set_customer_id()
         user.save()
         return redirect("home")
-    else:
-        # Handle unsupported HTTP methods
-        return JsonResponse({"error": f"Method {request.method} is not supported"}, status=405)
-
+    return render(request , "login.html")
+    # else:
+    #     # Handle unsupported HTTP methods
+    #     return JsonResponse({"error": f"Method {request.method} is not supported"}, status=405)
+#========== logout ============
+def logout_view(request):
+    if request.method=='GET':
+        messages.info(request,"Logged out successfully!")
+        logout(request)
+        return redirect('login')
+#======== user CURD =======
 def blog(request):
     return render(request , "blog.html")
 
