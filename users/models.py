@@ -29,8 +29,6 @@ class UserEx(User):
                 # You may want to log the error or take other actions as needed
                 # For example: print(f"Stripe Error: {e}")
                 pass
-    
-
 
     #set a function to clean phone no
     def set_phone(self,phone):
