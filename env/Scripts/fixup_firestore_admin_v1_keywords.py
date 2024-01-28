@@ -1,4 +1,4 @@
-#!E:\GitHub\cab-backend\november\env\Scripts\python.exe
+#!E:\GitHub\Molla-Ecommrece-store\env\Scripts\python.exe
 # -*- coding: utf-8 -*-
 # Copyright 2022 Google LLC
 #

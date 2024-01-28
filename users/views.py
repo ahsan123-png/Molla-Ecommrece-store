@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+
+from users.serializers import UserSerializer
 #======= import models ===========
 from .models import UserEx
  
@@ -54,6 +56,20 @@ def logout_view(request):
         logout(request)
         return redirect('login')
 #======== user CURD =======
+
+def all_users(request):
+    if request.method == "GET":
+        try:
+            users = UserEx.objects.all()
+            user_data = []
+            for user in users:
+                user_data.append(UserSerializer(user, context={"request": request}).data)
+            return JsonResponse(user_data, safe=False)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    else:
+        return JsonResponse({"error": f"Method {request.method} is not supported"}, status=405)
+#==========================
 def blog(request):
     return render(request , "blog.html")
 

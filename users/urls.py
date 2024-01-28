@@ -13,6 +13,8 @@ urlpatterns = [
     path('contact', views.contact, name='contact'), 
     path('faq', views.faq, name='faq'), 
     path('coming_soon', views.coming_soon, name='coming_soon'), 
+    #CURD user paths
+    path('all_users', views.all_users, name='all_user'), 
 
 
 ]
