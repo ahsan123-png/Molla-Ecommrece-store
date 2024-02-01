@@ -1,17 +1,12 @@
 from django.shortcuts import render
 
 def home(request):
-
-    
     return render(request, "index-5.html")
-
-
-
-def signin(request):
-    return render(request,"login.html")
-
-
+#==== register user ====
 def register(request):
+    return render(request,"login.html")
+#==== Signin user ====
+def signin(request):
     return render(request,"login.html")
 
 
