@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.contrib.auth.hashers import check_password
 #======== models & serializer =========
 from .models import UserEx
 from .serializers import UserSerializer
@@ -115,8 +116,49 @@ def get_user(request,id):
             f"Method {request.method} Not Allowed"
         )
 # ======= update a user by id =========
-def update(request,id):
-    pass
+@csrf_exempt
+def update(request, id):
+    if request.method == "PUT":
+        req_data = json.loads(request.body)
+        try:
+            user = UserEx.objects.get(id=id)
+            previous_data = UserSerializer(user, context={'request': request}).data
+
+            # Check password if provided
+            password = req_data.get('password')
+            if password and not check_password(password, user.password):
+                return JsonResponse({'error': 'Incorrect password'}, status=400)
+
+            # Update user fields if provided
+            if 'name' in req_data:
+                user.name = req_data['name']
+            if 'email' in req_data:
+                user.email = req_data['email']
+            if 'address' in req_data:
+                user.address = req_data['address']
+            if 'device_id' in req_data:
+                user.device_id = req_data['device_id']
+
+            # Update password if new password provided
+            new_password = req_data.get('new_password')
+            if new_password:
+                user.set_password(new_password)
+
+            user.save()
+            new_data = UserSerializer(user, context={'request': request}).data
+            return JsonResponse({
+                'previous_data': previous_data,
+                'new_data': new_data,
+            })
+
+        except UserEx.DoesNotExist:
+            return JsonResponse({'error': f'User with id {id} does not exist'}, status=404)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    else:
+        return JsonResponse({'error': f"Method {request.method} Not Allowed"}, status=405)
 # ======= delete a user by id =========
 def delete(request,id):
     pass

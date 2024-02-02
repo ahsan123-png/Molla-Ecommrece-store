@@ -15,5 +15,6 @@ urlpatterns = [
 #========== curd api's =============
     path('all/users', views.all_users, name='all_users'), 
     path('<int:id>/get/user', views.get_user, name='get_user'), 
+    path('<int:id>/update', views.update, name='update'), 
 
 ]
