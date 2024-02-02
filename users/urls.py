@@ -12,6 +12,8 @@ urlpatterns = [
     path('contact', views.contact, name='contact'), 
     path('faq', views.faq, name='faq'), 
     path('coming_soon', views.coming_soon, name='coming_soon'), 
-
+#========== curd api's =============
+    path('all/users', views.all_users, name='all_users'), 
+    path('<int:id>/get/user', views.get_user, name='get_user'), 
 
 ]
