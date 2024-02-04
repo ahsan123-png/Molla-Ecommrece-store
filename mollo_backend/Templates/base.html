@@ -101,6 +101,9 @@
                                 </li>
                                 {% if request.user.is_authenticated %}
                                 <li>
+                                    <a href="{% url "profile" %}" >Welcome, {{ user.username }}</a>
+                                </li>
+                                <li>
                                     <a href="{% url "blog" %}">Blog</a>
                                 </li>
                                 <li>

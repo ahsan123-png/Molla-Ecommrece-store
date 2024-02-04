@@ -169,7 +169,7 @@ def coming_soon(request):
     return render(request , "coming-soon.html")
 
 def profile(request):
-    pass
+    return render(request,"profile.html")
 
 #======= some usefull functions ============
 def get_request_body(request):
