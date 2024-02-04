@@ -60,15 +60,19 @@
                                 </li>
                                 <li>
                                     <a href="{% url "contact" %}" >Contact</a>
-
                                 </li>
+                                {% if request.user.is_authenticated %}
+                                <li>
+                                    <a href="{% url "blog" %}" >Blog</a>
+                                </li>
+                                <li>
+                                    <a href="{% url "logout" %}">Logout</a>
+                                </li>
+                                {% else %}
                                 <li>
                                     <a href="{% url "signin" %}">Login</a>
                                 </li>
-                                <li>
-                                    <a href="{% url "blog" %}" >Blog</a>
-
-                                </li>
+                                {% endif%}
                             </ul><!-- End .menu -->
                         </nav><!-- End .main-nav -->
                     </div><!-- End .header-left -->
@@ -88,7 +92,9 @@
                         <a href="{% url "wishlist" %}" class="wishlist-link">
                             <i class="icon-heart-o"></i>
                         </a>
-
+                        <a href="#" class="user-link">
+                            <i class="fas fa-user"></i>
+                        </a>
                         <div class="dropdown cart-dropdown">
                             <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                                 <i class="icon-shopping-cart"></i>

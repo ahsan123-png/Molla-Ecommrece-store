@@ -52,7 +52,7 @@ def logout_view(request):
     if request.method=='GET':
         messages.info(request,"Logged out successfully!")
         logout(request)
-        return redirect('login')
+        return redirect('/signin')
 # ========== CUARD Users =============
 # ------>>>>>>> Loading >>>>>>
 # ====== Get all Users =======
@@ -149,9 +149,6 @@ def update(request, id):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': f"Method {request.method} Not Allowed"}, status=405)
-
-    return render(request, "profile.html", {'user': user})
-
 # ======= delete a user by id =========
 def delete(request,id):
     pass

@@ -92,23 +92,25 @@
                             <ul class="menu">
                                 <li class="megamenu-container active">
                                     <a href="{% url "home" %}">Home</a>
-
                                 </li>
                                 <li>
                                     <a href="{% url "lists" %}">View Products</a>
-
-                                </li>
-                                <li>
-                                    <a href="{% url "signin" %}">Login</a>
-
                                 </li>
                                 <li>
                                     <a href="{% url "about" %}">About us</a>
                                 </li>
+                                {% if request.user.is_authenticated %}
                                 <li>
                                     <a href="{% url "blog" %}">Blog</a>
-
                                 </li>
+                                <li>
+                                    <a href="{% url "logout" %}">Logout</a>
+                                </li>
+                                {% else %}
+                                <li>
+                                    <a href="{% url "signin" %}">Login</a>
+                                </li>
+                                {% endif %}
                             </ul><!-- End .menu -->
                         </nav><!-- End .main-nav -->
                     </div><!-- End .header-left -->
