@@ -10,6 +10,8 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'email',
             'phone',
-            "date_joined"
+            "date_joined",
+            "name",
+            "useraddress"
 
         )
