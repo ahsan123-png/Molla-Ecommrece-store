@@ -2,16 +2,17 @@ from rest_framework import serializers
 from . import models
 # from .stripe import serializers as stripe_serializer
 
-class UserSerializer(serializers.ModelSerializer):
+class BlogSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.UserEx
+        model = models.BlogPost
         fields = (
             'id',
-            'username',
-            'email',
-            'phone',
+            'title',
+            'subject',
+            'description',
             "date_joined",
             "name",
-            "useraddress"
+            "useraddress",
+            "publish_date"
 
         )

@@ -119,30 +119,24 @@ def get_user(request,id):
 @csrf_exempt
 def update(request, id):
     if request.method == "POST":
-        req_data = json.loads(request.body)
         try:
             user = UserEx.objects.get(id=id)
-            previous_data = UserSerializer(user, context={'request': request}).data
-            password = req_data.get('password')
-            if password and not check_password(password, user.password):
-                return JsonResponse({'error': 'Incorrect password'}, status=400)
-            if 'name' in req_data:
-                user.name = req_data['name']
-            if 'email' in req_data:
-                user.email = req_data['email']
-            if 'address' in req_data:
-                user.address = req_data['address']
-            if 'device_id' in req_data:
-                user.device_id = req_data['device_id']
-            new_password = req_data.get('new_password')
-            if new_password:
-                user.set_password(new_password)
+            # previous_data = UserSerializer(user, context={'request': request}).data
+            # Update user fields from form data
+            if 'name' in request.POST:
+                user.name = request.POST['name']
+            if 'email' in request.POST:
+                user.email = request.POST['email']
+            if 'address' in request.POST:
+                user.useraddress = request.POST['address']
+            # Save updated user data
             user.save()
-            new_data = UserSerializer(user, context={'request': request}).data
-            return JsonResponse({
-                'previous_data': previous_data,
-                'new_data': new_data,
-            })
+            return redirect('profile')
+            # new_data = UserSerializer(user, context={'request': request}).data
+            # return JsonResponse({
+            #     'previous_data': previous_data,
+            #     'new_data': new_data,
+            # })
         except UserEx.DoesNotExist:
             return JsonResponse({'error': f'User with id {id} does not exist'}, status=404)
         except Exception as e:
@@ -153,9 +147,6 @@ def update(request, id):
 def delete(request,id):
     pass
 # ====================================
-def blog(request):
-    return render(request , "blog.html")
-
 def about(request):
     return render(request,"about.html")
 

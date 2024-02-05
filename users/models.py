@@ -9,6 +9,8 @@ class UserEx(User):
     date_of_birth = models.DateField(blank=True, null=True)
     phone = models.CharField(max_length=15,null=True,blank=True)
     customer_id = models.CharField(max_length=63,null=True,blank=True)
+    name = models.CharField(max_length=100, null=True)  # Nullable name field
+    useraddress = models.CharField(max_length=255, null=True) 
 
     #set customer ID
     def set_customer_id(self):
