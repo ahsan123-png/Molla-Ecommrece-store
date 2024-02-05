@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render , redirect
 
 from users.models import UserEx
 from .models import BlogPost
@@ -21,10 +21,10 @@ def upload(request):
         description = request.POST.get('description')
         picture = request.FILES.get('picture')
         user = UserEx.objects.get(id=request.user.id)
-        blog_post = BlogPost(user=user, title=title, subject=subject, description=description, picture=picture)
+        blog_post = BlogPost(user=user,title=title, subject=subject, description=description, picture=picture)
         try:
             blog_post.save()
-            return JsonResponse({'success': 'Blog post created successfully'})
+            return redirect('blog')
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     else:

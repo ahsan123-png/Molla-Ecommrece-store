@@ -11,5 +11,6 @@ class BlogPost(models.Model):
     description = models.TextField()
     picture = models.ImageField(upload_to='blog_pictures/')  
     publish_date = models.DateTimeField(default=timezone.now)
+    user = models.ForeignKey(UserEx,null=True,blank=True, on_delete=models.CASCADE)
     def __str__(self):
         return self.title
