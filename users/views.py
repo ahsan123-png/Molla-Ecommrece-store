@@ -169,7 +169,8 @@ def coming_soon(request):
     return render(request , "coming-soon.html")
 
 def profile(request):
-    return render(request,"profile.html")
+    user = UserEx.objects.get(id=request.user.id)  # Assuming you have a logged-in user
+    return render(request, 'profile.html', {'user': user})
 
 #======= some usefull functions ============
 def get_request_body(request):
