@@ -147,9 +147,6 @@ def update(request, id):
 def delete(request,id):
     pass
 # ====================================
-def blog(request):
-    return render(request , "blog.html")
-
 def about(request):
     return render(request,"about.html")
 
