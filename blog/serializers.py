@@ -10,9 +10,6 @@ class BlogSerializer(serializers.ModelSerializer):
             'title',
             'subject',
             'description',
-            "date_joined",
-            "name",
-            "useraddress",
             "publish_date"
 
         )
