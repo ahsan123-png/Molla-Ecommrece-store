@@ -57,10 +57,51 @@ def all_blogs(request):
         )
 # =========== Get blog by Id =============
 def get_blog(request,id):
-    pass
+    if request.method == "GET":
+        try:
+            blog=BlogPost.objects.get(id = id)
+            if blog is None:
+                return bad_response(
+                    request.method,{
+                        "error" : f"User with id {id} Doesn't Exits"
+                    },status=404
+                )
+            user_serializer=BlogSerializer(blog,context={"request" : request}).data
+            return good_response(
+                request.method,{
+                    "success" : user_serializer
+                },status=200
+            )
+        except Exception as e:
+            return bad_response(
+                request.method,{
+                    "error" : f"Internal server error {e}"
+                },status=500
+            )
+    else:
+        return bad_response(
+            request.method,
+            f"Method {request.method} Not Allowed"
+        )
 # =========== update Blog ================
 def update_blog(request,id):
-    pass
+    if request.method == "POST":
+        try:
+            blog = BlogPost.objects.get(id=id)
+            if 'title' in request.POST:
+                blog.title = request.POST['title']
+            if 'subject' in request.POST:
+                blog.subject = request.POST['subject']
+            if 'description' in request.POST:
+                blog.description = request.POST['description']
+            blog.save()
+            return redirect('blog')
+        except UserEx.DoesNotExist:
+            return JsonResponse({'error': f'User with id {id} does not exist'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': f"Method {request.method} Not Allowed"}, status=405)
 def delete_blog(request,id):
     pass
 # =========== delete Blog ================
