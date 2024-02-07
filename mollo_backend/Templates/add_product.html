@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+
+
+
+
+<title>Add Product</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    form {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    input[type="file"] {
+        margin-top: 10px;
+    }
+    input[type="submit"] {
+        background-color: #cc9966;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+    }
+    input[type="submit"]:hover {
+        background-color: #e1b674;
+    }
+</style>
+
+<body>
+    <form action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="product_name">Product Name:</label>
+        <input type="text" id="product_name" name="product_name" required>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
+
+        <label for="brand">Brand:</label>
+        <input type="text" id="brand" name="brand" required>
+
+        <label for="price">Price per Unit</label>
+        <input type="text" id="price" name="price" required>
+
+        <label for="color">Color:</label>
+        <input type="text" id="color" name="color" required>
+
+        <label for="size">Size:</label>
+        <input type="text" id="size" name="size" required>
+
+        <label for="stock">Stock:</label>
+        <input type="text" id="stock" name="stock" required>
+
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" required>
+
+        <label for="subcategory">Subcategory:</label>
+        <input type="text" id="subcategory" name="subcategory" required>
+
+        <label for="product_type">Product Type:</label>
+        <select id="product_type" name="product_type" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+
+        <label for="picture">Pictures:</label>
+        <input type="file" id="picture" name="picture" accept="image/*" multiple required>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+
+
+{% endblock body %}
+
+
+
+
+
+

@@ -92,7 +92,7 @@ def update_blog(request,id):
                 blog.title = request.POST['title']
             if 'subject' in request.POST:
                 blog.subject = request.POST['subject']
-            if 'describtion' in request.POST:
+            if 'description' in request.POST:
                 blog.description = request.POST['description']
             blog.save()
             return redirect('blog')
