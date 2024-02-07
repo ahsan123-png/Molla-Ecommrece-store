@@ -2,6 +2,12 @@ from django.db import models
 from users.models import UserEx
 # Create your models here.
 class Product(models.Model):
+    PRODUCT_TYPE = [
+        ('MALE', 'Pending'),
+        ('FEMALE', 'Confirmed'),
+        ('CUSTOM', 'Custom'),
+        
+    ]
     product_name = models.CharField(max_length=100)
     description = models.TextField()
     brand = models.CharField(max_length=50)
@@ -11,7 +17,8 @@ class Product(models.Model):
     stock = models.IntegerField()
     category = models.CharField(max_length=50)
     subcategory = models.CharField(max_length=50)
-
+    productType = models.CharField(max_length=50, choices=PRODUCT_TYPE, default='CUSTOM')
+    productPicture = models.ImageField(upload_to='productImage/', default="unknown")  
 
 
 
