@@ -4,6 +4,7 @@ from users.views import good_response,bad_response,get_request_body
 from users.models import UserEx
 from .models import BlogPost
 from.serializers import BlogSerializer
+from users.serializers import UserSerializer
 # Create your views here.
 
 def blog(request):
@@ -12,7 +13,7 @@ def blog(request):
 
 
 def review(request):
-    return render(request,"single.html")
+    pass
 
 def post_blog(request):
     return render(request,"post-blog.html")
@@ -68,12 +69,13 @@ def get_blog(request,id):
                         "error" : f"User with id {id} Doesn't Exits"
                     },status=404
                 )
-            user_serializer=BlogSerializer(blog,context={"request" : request}).data
-            return good_response(
-                request.method,{
-                    "success" : user_serializer
-                },status=200
-            )
+            formatted_date = blog.publish_date.strftime('%Y-%m-%d %H:%M')
+            user=UserEx.objects.get(id=blog.user_id)
+            userSerialzer=UserSerializer(user,context={"request" : request}).data 
+            blogSerializer=BlogSerializer(blog,context={"request" : request}).data
+            blogSerializer['publish_date'] = formatted_date
+            return render(request , "single.html",{"blog_data" : blogSerializer,
+                                                   "user_data" : userSerialzer}) 
         except Exception as e:
             return bad_response(
                 request.method,{

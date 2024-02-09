@@ -23,109 +23,40 @@
                 		<div class="col-lg-9">
                             <article class="entry single-entry">
                                 <figure class="entry-media">
-                                    <img src="{% static 'assets/images/blog/single/1.jpg' %}" alt="image desc">
+                                    <img src="{{blog_data.picture}}" alt="image desc">
                                 </figure><!-- End .entry-media -->
-
+                            
                                 <div class="entry-body">
                                     <div class="entry-meta">
                                         <span class="entry-author">
-                                            by <a href="#">John Doe</a>
+                                            by <a href="#">{{ user_data.username }}</a>
                                         </span>
                                         <span class="meta-separator">|</span>
-                                        <a href="#">Nov 22, 2018</a>
+                                        <a href="#">{{ blog_data.publish_date }}</a>
                                         <span class="meta-separator">|</span>
                                         <a href="#">2 Comments</a>
                                     </div><!-- End .entry-meta -->
-
+                            
                                     <h2 class="entry-title">
-                                        Cras ornare tristique elit.
+                                        {{ blog_data.title }}
                                     </h2><!-- End .entry-title -->
-
+                            
                                     <div class="entry-cats">
-                                        in <a href="#">Lifestyle</a>,
+                                        in <a href="#">{{blog_data.subject}}</a>,
                                         <a href="#">Shopping</a>
                                     </div><!-- End .entry-cats -->
-
+                            
                                     <div class="entry-content editor-content">
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo. Suspendisse potenti.</p>
-
-                                        <p>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est. Sed lectus. Praesent elementum hendrerit tortor. Sed semper lorem at felis. Vestibulum volutpat, lacus a <a href="#">ultrices sagittis</a>, mi neque euismod dui, eu pulvinar nunc sapien ornare nisl. Phasellus pede arcu, dapibus eu, fermentum et, dapibus sed, urna.</p>
-
-                                        <div class="pb-1"></div><!-- End .mb-1 -->
-
-                                        <img src="{% static 'assets/images/blog/single/2.jpg' %}" alt="image" class="float-left">
-
-                                        <h3>Quisque volutpat mattiseros. </h3>
-
-                                        <ul>
-                                            <li>Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo. Suspendisse potenti. </li>
-                                            <li>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est. </li>
-                                            <li>Sed lectus. Praesent elementum hendrerit tortor. Sed semper lorem at felis. Vestibulum volutpat, lacus a ultrices sagittis, mi neque euismod dui, eu pulvinar nunc sapien ornare nisl. Phasellus pede arcu, dapibus eu, fermentum et, dapibus sed, urna.</li>
-                                        </ul>
-
-                                        <div class="pb-1 clearfix"></div><!-- End .clearfix -->
-
-                                        <p>Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula <a href="#">sollicitudin laoreet</a> viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo. Suspendisse potenti. Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est. Sed lectus. Praesent elementum hendrerit tortor. Sed semper lorem at felis. </p>
-
-                                        <blockquote>
-                                            <p>“ Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. ”</p>
-                                        </blockquote>
-
-                                        <p>Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est. Sed lectus. Praesent elementum hendrerit tortor. Sed semper lorem at felis. Vestibulum volutpat, lacus a ultrices sagittis, mi neque euismod dui, eu pulvinar nunc sapien ornare nisl. Phasellus pede arcu, dapibus eu, fermentum et, dapibus sed, urna. Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. </p>
-
-                                        <div class="pb-1"></div><!-- End .pb-1 -->
-
-                                        <h3>Morbi interdum mollis sapien.</h3>
-
-                                        <img src="{% static 'assets/images/blog/single/3.jpg' %}" alt="image">
-
-                                        <p>Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo. Suspendisse potenti. Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est. Sed lectus. Praesent <a href="#">elementum hendrerit</a> tortor. Sed semper lorem at felis. Vestibulum volutpat, lacus a ultrices sagittis, mi neque euismod dui, eu pulvinar nunc sapien ornare nisl. Phasellus pede arcu, dapibus eu, fermentum et, dapibus sed, urna.</p>
-
-                                        <p>Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus. Sed vel lacus. Mauris nibh felis, adipiscing varius, adipiscing in, lacinia vel, tellus. Suspendisse ac urna. Etiam pellentesque mauris ut lectus. Nunc tellus ante, mattis eget, gravida vitae, ultricies ac, leo. Integer leo pede, ornare a, lacinia eu, vulputate vel, nisl. Suspendisse mauris. Fusce accumsan mollis eros. Pellentesque a diam sit amet mi ullamcorper vehicula. Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. </p>
+                                        <p>{{ blog_data.description }}</p>
+                                        <!-- Add more fields as needed -->
                                     </div><!-- End .entry-content -->
-
-                                    <div class="entry-footer row no-gutters flex-column flex-md-row">
-                                        <div class="col-md">
-                                            <div class="entry-tags">
-                                                <span>Tags:</span> <a href="#">photography</a> <a href="#">style</a>
-                                            </div><!-- End .entry-tags -->
-                                        </div><!-- End .col -->
-
-                                        <div class="col-md-auto mt-2 mt-md-0">
-                                            <div class="social-icons social-icons-color">
-                                                <span class="social-label">Share this post:</span>
-                                                <a href="#" class="social-icon social-facebook" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
-                                                <a href="#" class="social-icon social-twitter" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
-                                                <a href="#" class="social-icon social-pinterest" title="Pinterest" target="_blank"><i class="icon-pinterest"></i></a>
-                                                <a href="#" class="social-icon social-linkedin" title="Linkedin" target="_blank"><i class="icon-linkedin"></i></a>
-                                            </div><!-- End .soial-icons -->
-                                        </div><!-- End .col-auto -->
-                                    </div><!-- End .entry-footer row no-gutters -->
+                            
+                                    <!-- Add more HTML structure as needed -->
                                 </div><!-- End .entry-body -->
-
-                                <div class="entry-author-details">
-                                    <figure class="author-media">
-                                        <a href="#">
-                                            <img src="{% static 'assets/images/blog/single/author.jpg' %}" alt="User name">
-                                        </a>
-                                    </figure><!-- End .author-media -->
-
-                                    <div class="author-body">
-                                        <div class="author-header row no-gutters flex-column flex-md-row">
-                                            <div class="col">
-                                                <h4><a href="#">John Doe</a></h4>
-                                            </div><!-- End .col -->
-                                            <div class="col-auto mt-1 mt-md-0">
-                                                <a href="#" class="author-link">View all posts by John Doe <i class="icon-long-arrow-right"></i></a>
-                                            </div><!-- End .col -->
-                                        </div><!-- End .row -->
-
-                                        <div class="author-content">
-                                            <p>Praesent dapibus, neque id cursus faucibus, tortor neque egestas auguae, eu vulputate magna eros eu erat. Aliquam erat volutpat. </p>
-                                        </div><!-- End .author-content -->
-                                    </div><!-- End .author-body -->
-                                </div><!-- End .entry-author-details-->
+                            
+                                <!-- Add more HTML structure as needed -->
                             </article><!-- End .entry -->
+                            
 
                             <nav class="pager-nav" aria-label="Page navigation">
                                 <a class="pager-link pager-link-prev" href="#" aria-label="Previous" tabindex="-1">
