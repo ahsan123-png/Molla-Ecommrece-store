@@ -1,10 +1,14 @@
+import json
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
 from product.models import Product
-from users.views import bad_response
+from users.views import bad_response,good_response,get_request_body
+from .serializers import ProductSerializer
 # Create your views here.
+
+
 def products(request):
     return render(request,"list-products.html")
 
@@ -53,77 +57,80 @@ def addProduct(request):
 
 
 # =========== get all blogs ==============
-# def all_blogs(request):
-#     try:
-#         blog_data = []
-#         blogs = Product.objects.all()
-#         if not blogs:
-#             return bad_response(
-#                 request.method, {
-#                     "error": "No Blogs Data available"
-#                 }, status=404
-#             )
-#         for blog in blogs:
-#             blog_serializer = BlogSerializer(blog, context={"request": request}).data
-#             blog_data.append(blog_serializer)
-#         return good_response(
-#             request.method, {
-#                 "blog_data": blog_data
-#             }, status=200
-#         )
-#     except Exception as e:
-#         return bad_response(
-#             request.method, {
-#                 "error": f"Internal Server Error: {e}"
-#             }, status=500
-#         )
+def allProduct(request):
+    try:
+        blog_data = []
+        blogs = Product.objects.all()
+        if not blogs:
+            return bad_response(
+                request.method, {
+                    "error": "No Blogs Data available"
+                }, status=404
+            )
+        for blog in blogs:
+            blog_serializer = ProductSerializer(blog, context={"request": request}).data
+            blog_data.append(blog_serializer)
+        return good_response(
+            request.method, {
+                "blog_data": blog_data
+            }, status=200
+        )
+    except Exception as e:
+        return bad_response(
+            request.method, {
+                "error": f"Internal Server Error: {e}"
+            }, status=500
+        )
 # # =========== Get blog by Id =============
-# def get_blog(request,id):
-#     if request.method == "GET":
-#         try:
-#             blog=BlogPost.objects.get(id = id)
-#             if blog is None:
-#                 return bad_response(
-#                     request.method,{
-#                         "error" : f"User with id {id} Doesn't Exits"
-#                     },status=404
-#                 )
-#             user_serializer=BlogSerializer(blog,context={"request" : request}).data
-#             return good_response(
-#                 request.method,{
-#                     "success" : user_serializer
-#                 },status=200
-#             )
-#         except Exception as e:
-#             return bad_response(
-#                 request.method,{
-#                     "error" : f"Internal server error {e}"
-#                 },status=500
-#             )
-#     else:
-#         return bad_response(
-#             request.method,
-#             f"Method {request.method} Not Allowed"
-#         )
+def getProduct(request,id):
+    if request.method == "GET":
+        try:
+            product=Product.objects.get(id = id)
+            if product is None:
+                return bad_response(
+                    request.method,{
+                        "error" : f"User with id {id} Doesn't Exits"
+                    },status=404
+                )
+            user_serializer=ProductSerializer(product,context={"request" : request}).data
+            return good_response(
+                request.method,{
+                    "success" : user_serializer
+                },status=200
+            )
+        except Exception as e:
+            return bad_response(
+                request.method,{
+                    "error" : f"Internal server error : {e}"
+                },status=500
+            )
+    else:
+        return bad_response(
+            request.method,
+            f"Method {request.method} Not Allowed"
+        )
 # # =========== update Blog ================
-# def update_blog(request,id):
-#     if request.method == "POST":
-#         try:
-#             blog = BlogPost.objects.get(id=id)
-#             if 'title' in request.POST:
-#                 blog.title = request.POST['title']
-#             if 'subject' in request.POST:
-#                 blog.subject = request.POST['subject']
-#             if 'describtion' in request.POST:
-#                 blog.description = request.POST['description']
-#             blog.save()
-#             return redirect('blog')
-#         except UserEx.DoesNotExist:
-#             return JsonResponse({'error': f'User with id {id} does not exist'}, status=404)
-#         except Exception as e:
-#             return JsonResponse({'error': str(e)}, status=500)
-#     else:
-#         return JsonResponse({'error': f"Method {request.method} Not Allowed"}, status=405)
-# def delete_blog(request,id):
-#     pass
-# # =========== delete Blog ================
+@csrf_exempt
+def updateProduct(request, id):
+    if request.method == "PUT":
+        try:
+            if request.content_type == 'application/json':
+                data = json.loads(request.body)
+            else:
+                data = request.POST.dict()
+            product = Product.objects.get(id=id)
+            serializer = ProductSerializer(product, data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse({'success': f'Product with id {id} updated successfully'}, status=200)
+            else:
+                return JsonResponse(serializer.errors, status=400)
+        except Product.DoesNotExist:
+            return JsonResponse({'error': f'Product with id {id} does not exist'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': f'Method {request.method} Not Allowed'}, status=405)
+# =========== delete Blog ================
+def deleteProduct(request,id):
+    pass
