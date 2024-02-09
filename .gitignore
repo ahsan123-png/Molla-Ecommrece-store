@@ -170,3 +170,4 @@ november/booking/migrations/0006_alter_booking_pickup_time_and_more.py
 november/driver/migrations/0009_alter_driverdetail_expiry_date.py
 db.sqlite3
 db.sqlite3
+db.sqlite3
