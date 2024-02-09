@@ -13,3 +13,19 @@ urlpatterns = [
 
 
 ]
+
+# this static settingd are very import to display image on website
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+if settings.DEBUG:
+    
+    urlpatterns += static(
+        settings.STATIC_URL, ## The URL for it
+        document_root=settings.STATIC_ROOT ## the Folder
+    )  ## FOR STATIC URL
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
