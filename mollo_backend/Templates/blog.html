@@ -161,27 +161,27 @@
                                 </div><!-- End .entry-content -->
                             </div><!-- End .entry-body -->
                         </article><!-- End .entry -->
-
+                        {% for post in blog_posts %}
                         <article class="entry">
                             <figure class="entry-media">
                                 <a href="{% url "single" %}">
-                                    <img src="{% static 'assets/images/blog/post-5.jpg' %}" alt="image desc">
+                                    <img src="{{ post.picture.url }}" alt="image desc">
                                 </a>
                             </figure><!-- End .entry-media -->
 
                             <div class="entry-body">
                                 <div class="entry-meta">
                                     <span class="entry-author">
-                                        by <a href="#">John Doe</a>
+                                        by <a href="#">{{ post.user.username }}</a>
                                     </span>
                                     <span class="meta-separator">|</span>
-                                    <a href="#">Nov 11, 2018</a>
+                                    <a href="#">{{ post.publish_date }}</a>
                                     <span class="meta-separator">|</span>
                                     <a href="#">2 Comments</a>
                                 </div><!-- End .entry-meta -->
 
                                 <h2 class="entry-title">
-                                    <a href="{% url "single" %}">Aenean dignissim pellentesque felis.</a>
+                                    <a href="{% url "single" %}">{{ post.title }}</a>
                                 </h2><!-- End .entry-title -->
 
                                 <div class="entry-cats">
@@ -190,12 +190,12 @@
                                 </div><!-- End .entry-cats -->
 
                                 <div class="entry-content">
-                                    <p>Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus. Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. </p>
+                                    <p>{{ post.description }} </p>
                                     <a href="{% url "single" %}" class="read-more">Continue Reading</a>
                                 </div><!-- End .entry-content -->
                             </div><!-- End .entry-body -->
                         </article><!-- End .entry -->
-
+                        {% endfor %}
 
                         <nav aria-label="Page navigation">
                             <ul class="pagination">

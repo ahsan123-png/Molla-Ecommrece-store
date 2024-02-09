@@ -7,7 +7,9 @@ from.serializers import BlogSerializer
 # Create your views here.
 
 def blog(request):
-    return render(request , "blog.html")
+    blog_posts = BlogPost.objects.all()
+    return render(request, 'blog.html', {'blog_posts': blog_posts})
+
 
 def review(request):
     return render(request,"single.html")
@@ -102,6 +104,6 @@ def update_blog(request,id):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': f"Method {request.method} Not Allowed"}, status=405)
+# =========== delete Blog ================
 def delete_blog(request,id):
     pass
-# =========== delete Blog ================
