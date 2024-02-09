@@ -122,7 +122,9 @@ def updateProduct(request, id):
             serializer = ProductSerializer(product, data=data)
             if serializer.is_valid():
                 serializer.save()
-                return JsonResponse({'success': f'Product with id {id} updated successfully'}, status=200)
+                serialized_data = serializer.data
+                return JsonResponse({'success': f'Product with id {id} updated successfully',
+                                     "product" : serialized_data}, status=200)
             else:
                 return JsonResponse(serializer.errors, status=400)
         except Product.DoesNotExist:
