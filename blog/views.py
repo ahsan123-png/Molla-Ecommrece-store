@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 from django.shortcuts import render , redirect
 from users.views import good_response,bad_response,get_request_body
 from users.models import UserEx
@@ -6,12 +7,6 @@ from .models import BlogPost
 from.serializers import BlogSerializer
 from users.serializers import UserSerializer
 # Create your views here.
-
-def blog(request):
-    blog_posts = BlogPost.objects.all()
-    return render(request, 'blog.html', {'blog_posts': blog_posts})
-
-
 def review(request):
     pass
 
@@ -34,29 +29,41 @@ def upload(request):
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 # =========== get all blogs ==============
-def all_blogs(request):
+def blog(request):
     try:
         blog_data = []
-        blogs = BlogPost.objects.all()
+        # Order the queryset by publish_date
+        blogs = BlogPost.objects.order_by('-publish_date')
+        paginator = Paginator(blogs, 3)  # Display 3 blogs per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
         if not blogs:
-            return bad_response(
-                request.method, {
+            return render(
+                request, 
+                "blog.html",
+                {
                     "error": "No Blogs Data available"
-                }, status=404
+                }
             )
-        for blog in blogs:
+        for blog in page_obj:
             blog_serializer = BlogSerializer(blog, context={"request": request}).data
             blog_data.append(blog_serializer)
-        return good_response(
-            request.method, {
-                "blog_data": blog_data
-            }, status=200
+        return render(
+            request, 
+            "blog.html",
+            {
+                "blog_data": blog_data,
+                "page_obj": page_obj
+            }
         )
     except Exception as e:
-        return bad_response(
-            request.method, {
+        return render(
+            request, 
+            "blog.html",
+            {
                 "error": f"Internal Server Error: {e}"
-            }, status=500
+            },
+            status=500  # This parameter should be removed
         )
 # =========== Get blog by Id =============
 def get_blog(request,id):
