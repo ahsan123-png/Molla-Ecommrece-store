@@ -78,11 +78,11 @@ def get_blog(request,id):
                 )
             formatted_date = blog.publish_date.strftime('%Y-%m-%d %H:%M')
             user=UserEx.objects.get(id=blog.user_id)
-            userSerialzer=UserSerializer(user,context={"request" : request}).data 
+            userSerializer=UserSerializer(user,context={"request" : request}).data 
             blogSerializer=BlogSerializer(blog,context={"request" : request}).data
             blogSerializer['publish_date'] = formatted_date
             return render(request , "single.html",{"blog_data" : blogSerializer,
-                                                   "user_data" : userSerialzer}) 
+                                                   "user_data" : userSerializer}) 
         except Exception as e:
             return bad_response(
                 request.method,{
