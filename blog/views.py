@@ -1,10 +1,11 @@
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.shortcuts import render , redirect
 from users.views import good_response,bad_response,get_request_body
 from users.models import UserEx
-from .models import BlogPost, Like
-from.serializers import BlogSerializer
+from .models import BlogPost, Comment, Like
+from.serializers import BlogSerializer, CommentSerializer
 from users.serializers import UserSerializer
 # Create your views here.
 def review(request):
@@ -76,6 +77,11 @@ def get_blog(request, id):
                         "error" : f"Post with id {id} Doesn't Exist"
                     },status=404
                 )
+            
+            # Fetch comments related to the blog post
+            comments = Comment.objects.filter(blog_post=blog)
+            comment_serializer = CommentSerializer(comments, many=True).data
+
             next_post = BlogPost.objects.filter(id__gt=id).order_by('id').first()
             previous_post = BlogPost.objects.filter(id__lt=id).order_by('-id').first()
 
@@ -93,7 +99,8 @@ def get_blog(request, id):
                 "blog_data": blogSerializer,
                 "user_data": userSerializer,
                 "next_post_id": next_post_id,
-                "previous_post_id": previous_post_id
+                "previous_post_id": previous_post_id,
+                "comments": comment_serializer  # Passing comments to the template context
             }) 
         except Exception as e:
             return bad_response(
@@ -130,6 +137,7 @@ def update_blog(request,id):
 def delete_blog(request,id):
     pass
 # ============ Likes on Post ================
+@csrf_exempt
 def increment_count(request, id):
     if request.method == 'POST':
         blog_post = BlogPost.objects.get(id=id)
@@ -140,4 +148,4 @@ def increment_count(request, id):
             blog_post.like_count += 1
             blog_post.save()
     return redirect('get_blog', id=id)
-# =========== detail post Pagination =====
+# =========== Post Comments ======
