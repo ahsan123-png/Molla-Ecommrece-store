@@ -10,6 +10,8 @@ urlpatterns = [
     path('<int:id>/get_blog', views.get_blog, name='get_blog'), 
     path('<int:id>/update_blog', views.update_blog, name='update_blog'), 
     path('<int:id>/delete_blog', views.delete_blog, name='delete_blog'), 
+    path('increment_count/<int:id>', views.increment_count, name='increment_count'), 
+    
 
 
 ]

@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render , redirect
 from users.views import good_response,bad_response,get_request_body
 from users.models import UserEx
-from .models import BlogPost
+from .models import BlogPost, Like
 from.serializers import BlogSerializer
 from users.serializers import UserSerializer
 # Create your views here.
@@ -66,23 +66,35 @@ def blog(request):
             status=500  # This parameter should be removed
         )
 # =========== Get blog by Id =============
-def get_blog(request,id):
+def get_blog(request, id):
     if request.method == "GET":
         try:
-            blog=BlogPost.objects.get(id = id)
+            blog = BlogPost.objects.get(id=id)
             if blog is None:
                 return bad_response(
                     request.method,{
-                        "error" : f"User with id {id} Doesn't Exits"
+                        "error" : f"Post with id {id} Doesn't Exist"
                     },status=404
                 )
+            next_post = BlogPost.objects.filter(id__gt=id).order_by('id').first()
+            previous_post = BlogPost.objects.filter(id__lt=id).order_by('-id').first()
+
             formatted_date = blog.publish_date.strftime('%Y-%m-%d %H:%M')
-            user=UserEx.objects.get(id=blog.user_id)
-            userSerializer=UserSerializer(user,context={"request" : request}).data 
-            blogSerializer=BlogSerializer(blog,context={"request" : request}).data
+            user = UserEx.objects.get(id=blog.user_id)
+            userSerializer = UserSerializer(user, context={"request": request}).data 
+            blogSerializer = BlogSerializer(blog, context={"request": request}).data
             blogSerializer['publish_date'] = formatted_date
-            return render(request , "single.html",{"blog_data" : blogSerializer,
-                                                   "user_data" : userSerializer}) 
+            blogSerializer['like_count'] = Like.objects.filter(blog_post=blog).count()
+
+            next_post_id = next_post.id if next_post else None
+            previous_post_id = previous_post.id if previous_post else None
+
+            return render(request, "single.html", {
+                "blog_data": blogSerializer,
+                "user_data": userSerializer,
+                "next_post_id": next_post_id,
+                "previous_post_id": previous_post_id
+            }) 
         except Exception as e:
             return bad_response(
                 request.method,{
@@ -94,6 +106,7 @@ def get_blog(request,id):
             request.method,
             f"Method {request.method} Not Allowed"
         )
+
 # =========== update Blog ================
 def update_blog(request,id):
     if request.method == "POST":
@@ -116,3 +129,15 @@ def update_blog(request,id):
 # =========== delete Blog ================
 def delete_blog(request,id):
     pass
+# ============ Likes on Post ================
+def increment_count(request, id):
+    if request.method == 'POST':
+        blog_post = BlogPost.objects.get(id=id)
+        user = request.user
+        userInstance = UserEx.objects.get(user_ptr_id=user.id)
+        if not Like.objects.filter(user=userInstance, blog_post=blog_post).exists():
+            Like.objects.create(user=userInstance, blog_post=blog_post)
+            blog_post.like_count += 1
+            blog_post.save()
+    return redirect('get_blog', id=id)
+# =========== detail post Pagination =====

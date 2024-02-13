@@ -12,6 +12,7 @@ class BlogSerializer(serializers.ModelSerializer):
             'description',
             "publish_date",
             "user",
-            "picture"
+            "picture",
+            "like_count"
 
         )
