@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
@@ -149,3 +150,35 @@ def increment_count(request, id):
             blog_post.save()
     return redirect('get_blog', id=id)
 # =========== Post Comments ======
+def post_comment(request, blog_id):
+    if request.method == "POST":
+        try:
+            blog_post = BlogPost.objects.get(id=blog_id)
+            comment_text = request.POST.get("comment_text")
+            comment = Comment.objects.create(
+                user=request.user,  # Use the currently logged-in user
+                blog_post=blog_post,
+                text=comment_text,
+                created_at=timezone.now()
+            )
+            comment_serializer = CommentSerializer(comment).data
+            return JsonResponse({
+                "success": True,
+                "data": comment_serializer
+            })
+        except Exception as e:
+            return JsonResponse({
+                "success": False,
+                "reason": {"error": f"Internal server error {e}"},
+                "data": None,
+                "status": 500,
+                "method": request.method
+            })
+    else:
+        return JsonResponse({
+            "success": False,
+            "reason": {"error": f"Method {request.method} Not Allowed"},
+            "data": None,
+            "status": 405,
+            "method": request.method
+        })
