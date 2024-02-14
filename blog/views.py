@@ -139,7 +139,7 @@ def delete_blog(request,id):
     pass
 # ============ Likes on Post ================
 @csrf_exempt
-def increment_count(request, id):
+def likeCount(request, id):
     if request.method == 'POST':
         blog_post = BlogPost.objects.get(id=id)
         user = request.user
@@ -150,7 +150,7 @@ def increment_count(request, id):
             blog_post.save()
     return redirect('get_blog', id=id)
 # =========== Post Comments ======
-def post_comment(request, blog_id):
+def postComment(request, blog_id):
     if request.method == "POST":
         try:
             blog_post = BlogPost.objects.get(id=blog_id)
