@@ -1,17 +1,14 @@
+from datetime import timezone
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator
 from django.shortcuts import render , redirect
 from users.views import good_response,bad_response,get_request_body
 from users.models import UserEx
-from .models import BlogPost
-from.serializers import BlogSerializer
+from .models import BlogPost, Comment, Like
+from.serializers import BlogSerializer, CommentSerializer
 from users.serializers import UserSerializer
 # Create your views here.
-
-def blog(request):
-    blog_posts = BlogPost.objects.all()
-    return render(request, 'blog.html', {'blog_posts': blog_posts})
-
-
 def review(request):
     pass
 
@@ -34,48 +31,78 @@ def upload(request):
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 # =========== get all blogs ==============
-def all_blogs(request):
+def blog(request):
     try:
         blog_data = []
-        blogs = BlogPost.objects.all()
+        # Order the queryset by publish_date
+        blogs = BlogPost.objects.order_by('-publish_date')
+        paginator = Paginator(blogs, 3)  # Display 3 blogs per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
         if not blogs:
-            return bad_response(
-                request.method, {
+            return render(
+                request, 
+                "blog.html",
+                {
                     "error": "No Blogs Data available"
-                }, status=404
+                }
             )
-        for blog in blogs:
+        for blog in page_obj:
             blog_serializer = BlogSerializer(blog, context={"request": request}).data
             blog_data.append(blog_serializer)
-        return good_response(
-            request.method, {
-                "blog_data": blog_data
-            }, status=200
+        return render(
+            request, 
+            "blog.html",
+            {
+                "blog_data": blog_data,
+                "page_obj": page_obj
+            }
         )
     except Exception as e:
-        return bad_response(
-            request.method, {
+        return render(
+            request, 
+            "blog.html",
+            {
                 "error": f"Internal Server Error: {e}"
-            }, status=500
+            },
+            status=500  # This parameter should be removed
         )
 # =========== Get blog by Id =============
-def get_blog(request,id):
+def get_blog(request, id):
     if request.method == "GET":
         try:
-            blog=BlogPost.objects.get(id = id)
+            blog = BlogPost.objects.get(id=id)
             if blog is None:
                 return bad_response(
                     request.method,{
-                        "error" : f"User with id {id} Doesn't Exits"
+                        "error" : f"Post with id {id} Doesn't Exist"
                     },status=404
                 )
+            
+            # Fetch comments related to the blog post
+            comments = Comment.objects.filter(blog_post=blog)
+            comment_serializer = CommentSerializer(comments, many=True).data
+
+            next_post = BlogPost.objects.filter(id__gt=id).order_by('id').first()
+            previous_post = BlogPost.objects.filter(id__lt=id).order_by('-id').first()
+
             formatted_date = blog.publish_date.strftime('%Y-%m-%d %H:%M')
-            user=UserEx.objects.get(id=blog.user_id)
-            userSerialzer=UserSerializer(user,context={"request" : request}).data 
-            blogSerializer=BlogSerializer(blog,context={"request" : request}).data
+            user = UserEx.objects.get(id=blog.user_id)
+            userSerializer = UserSerializer(user, context={"request": request}).data 
+            blogSerializer = BlogSerializer(blog, context={"request": request}).data
             blogSerializer['publish_date'] = formatted_date
-            return render(request , "single.html",{"blog_data" : blogSerializer,
-                                                   "user_data" : userSerialzer}) 
+            blogSerializer['like_count'] = Like.objects.filter(blog_post=blog).count()
+
+            next_post_id = next_post.id if next_post else None
+            previous_post_id = previous_post.id if previous_post else None
+
+            return render(request, "single.html", {
+                "blog_data": blogSerializer,
+                "user_data": userSerializer,
+                "next_post_id": next_post_id,
+                "previous_post_id": previous_post_id,
+                "comments": comment_serializer  # Passing comments to the template context
+            }) 
         except Exception as e:
             return bad_response(
                 request.method,{
@@ -87,6 +114,7 @@ def get_blog(request,id):
             request.method,
             f"Method {request.method} Not Allowed"
         )
+
 # =========== update Blog ================
 def update_blog(request,id):
     if request.method == "POST":
@@ -109,3 +137,48 @@ def update_blog(request,id):
 # =========== delete Blog ================
 def delete_blog(request,id):
     pass
+# ============ Likes on Post ================
+@csrf_exempt
+def likeCount(request, id):
+    if request.method == 'POST':
+        blog_post = BlogPost.objects.get(id=id)
+        user = request.user
+        userInstance = UserEx.objects.get(user_ptr_id=user.id)
+        if not Like.objects.filter(user=userInstance, blog_post=blog_post).exists():
+            Like.objects.create(user=userInstance, blog_post=blog_post)
+            blog_post.like_count += 1
+            blog_post.save()
+    return redirect('get_blog', id=id)
+# =========== Post Comments ======
+def postComment(request, blog_id):
+    if request.method == "POST":
+        try:
+            blog_post = BlogPost.objects.get(id=blog_id)
+            comment_text = request.POST.get("comment_text")
+            comment = Comment.objects.create(
+                user=request.user,  # Use the currently logged-in user
+                blog_post=blog_post,
+                text=comment_text,
+                created_at=timezone.now()
+            )
+            comment_serializer = CommentSerializer(comment).data
+            return JsonResponse({
+                "success": True,
+                "data": comment_serializer
+            })
+        except Exception as e:
+            return JsonResponse({
+                "success": False,
+                "reason": {"error": f"Internal server error {e}"},
+                "data": None,
+                "status": 500,
+                "method": request.method
+            })
+    else:
+        return JsonResponse({
+            "success": False,
+            "reason": {"error": f"Method {request.method} Not Allowed"},
+            "data": None,
+            "status": 405,
+            "method": request.method
+        })

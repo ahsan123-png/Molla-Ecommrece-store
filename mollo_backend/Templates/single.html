@@ -1,6 +1,31 @@
 {% extends "base.html" %}
 {% block body %}
 {% load static %}
+<style>
+    .custom-flex-container {
+        display: flex;
+        align-items: center;
+        font-family: sans-serif;
+        padding: 5px;
+    }
+    
+    .custom-button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        outline: none;
+    }
+    
+    .custom-heart-icon {
+        color: red;
+        font-size: 3rem;
+    }
+    
+    .custom-counter {
+        margin-left: 10px;
+        font-size: 1.25rem;
+    }
+</style>
         <main class="main">
         	<div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
         		<div class="container">
@@ -35,6 +60,17 @@
                                         <a href="#">{{ blog_data.publish_date }}</a>
                                         <span class="meta-separator">|</span>
                                         <a href="#">2 Comments</a>
+                                        <span class="meta-separator">|</span>
+                                        <div class="custom-flex-container">
+                                            <form action="{% url 'increment_count' id=blog_data.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <button class="custom-button" type="submit">
+                                                    <i class="icon-heart-o"></i>
+                                                </button>
+                                                <span>{{ blog_data.like_count }}</span>
+                                            </form>
+                                            {% comment %} <span class="custom-counter">{{ blog_data.like_count }}</span> {% endcomment %}
+                                        </div>
                                     </div><!-- End .entry-meta -->
                             
                                     <h2 class="entry-title">
@@ -59,16 +95,20 @@
                             
 
                             <nav class="pager-nav" aria-label="Page navigation">
-                                <a class="pager-link pager-link-prev" href="#" aria-label="Previous" tabindex="-1">
+                                {% if previous_post_id %}
+                                <a class="pager-link pager-link-prev" href="{% url 'get_blog' id=previous_post_id %}" aria-label="Previous">
                                     Previous Post
-                                    <span class="pager-link-title">Cras iaculis ultricies nulla</span>
+                                    <span class="pager-link-title">Look Out Previous Post</span>
                                 </a>
-
-                                <a class="pager-link pager-link-next" href="#" aria-label="Next" tabindex="-1">
+                                {% endif %}
+                                
+                                {% if next_post_id %}
+                                <a class="pager-link pager-link-next" href="{% url 'get_blog' id=next_post_id %}" aria-label="Next">
                                     Next Post
-                                    <span class="pager-link-title">Praesent placerat risus</span>
+                                    <span class="pager-link-title">Move On to Next Post</span>
                                 </a>
-                            </nav><!-- End .pager-nav -->
+                                {% endif %}
+                            </nav><!-- End .pager-nav -->   
 
                             <div class="related-posts">
                                 <h3 class="title">Related Posts</h3><!-- End .title -->
@@ -273,19 +313,8 @@
                                 <form action="#">
                                     <label for="reply-message" class="sr-only">Comment</label>
                                     <textarea name="reply-message" id="reply-message" cols="30" rows="4" class="form-control" required placeholder="Comment *"></textarea>
-
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <label for="reply-name" class="sr-only">Name</label>
-                                            <input type="text" class="form-control" id="reply-name" name="reply-name" required placeholder="Name *">
-                                        </div><!-- End .col-md-6 -->
-
-                                        <div class="col-md-6">
-                                            <label for="reply-email" class="sr-only">Email</label>
-                                            <input type="email" class="form-control" id="reply-email" name="reply-email" required placeholder="Email *">
-                                        </div><!-- End .col-md-6 -->
                                     </div><!-- End .row -->
-
                                     <button type="submit" class="btn btn-outline-primary-2">
                                         <span>POST COMMENT</span>
                                         <i class="icon-long-arrow-right"></i>
