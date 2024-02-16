@@ -144,3 +144,4 @@ def updateProduct(request, id):
 # =========== delete Blog ================
 def deleteProduct(request,id):
     pass
+
