@@ -44,7 +44,7 @@ def addProduct(request):
         
         # Create ProductPicture instances for each uploaded image
         for picture in product_pictures:
-            product_picture = ProductPicture(product=product, picture=picture)
+            product_picture = ProductPicture.objects.create(product=product, picture=picture)
             product_picture.save()
         # Update or create inventory entry
         inventory, created = Inventory.objects.get_or_create(

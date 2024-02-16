@@ -2,6 +2,14 @@
 
 {% block body%}
 {% load static %}
+<head>
+    <!-- Include jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+    <!-- Include jQuery Zoom plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-zoom/1.7.21/jquery.zoom.min.js"></script>
+</head>
+
 <main class="main">
             <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
                 <div class="container d-flex align-items-center">
@@ -33,7 +41,7 @@
                                 <div class="product-gallery product-gallery-vertical">
                                     <div class="row">
                                         <figure class="product-main-image">
-                                            <img id="product-zoom" src="{{ product_images.0.picture.url }}" data-zoom-image="{{ product_images.0.picture.url }}" alt="product image">
+                                            <img id="product-zoom" src="{{ product_images.0.picture }}" data-zoom-image="{{ product_images.0.picture }}" alt="product image">
 
                                             <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                                 <i class="icon-arrows"></i>
@@ -41,11 +49,13 @@
                                         </figure><!-- End .product-main-image -->
                                         <div id="product-zoom-gallery" class="product-image-gallery">
                                             {% for image in product_images %}
-                                            <a class="product-gallery-item {% if forloop.first %}active{% endif %}" href="#" data-image="{{ image.picture.url }}" data-zoom-image="{{ image.picture.url }}">
-                                                <img src="{{ image.picture.url }}" alt="product image">
+                                            <a class="product-gallery-item {% if forloop.first %}active{% endif %}" href="#" data-image="{{ image.picture }}" data-zoom-image="{{ image.picture }}">
+                                                <img src="{{ image.picture }}" alt="product image">
                                             </a>
                                             {% endfor %}
                                         </div>
+                                    </div>
+                                </div>
                             </div><!-- End .col-md-6 -->
 
                             <div class="col-md-6">
@@ -456,5 +466,10 @@
                 </div><!-- End .container -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
-
+        <script>
+            $(document).ready(function() {
+                $('.zoom').zoom();
+            });
+        </script>
+        
 {% endblock  %}
