@@ -16,7 +16,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'category',
             'subcategory',
             'productType',
-            'productPicture',
+            'productPictures',  # Updated field name
         )
 
 class ProductReviewSerializer(serializers.ModelSerializer):
@@ -40,3 +40,7 @@ class InventorySerializer(serializers.ModelSerializer):
             'product',
             'stock_quantity',
         )
+class ProductPictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ProductPicture
+        fields = ['id', 'picture']
