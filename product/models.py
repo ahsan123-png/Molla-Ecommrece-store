@@ -18,9 +18,11 @@ class Product(models.Model):
     category = models.CharField(max_length=50)
     subcategory = models.CharField(max_length=50)
     productType = models.CharField(max_length=50, choices=PRODUCT_TYPE, default='CUSTOM')
-    productPicture = models.ImageField(upload_to='productImage/', default="unknown")  
-
-
+    productPictures = models.ManyToManyField('ProductPicture', related_name='products')
+    
+class ProductPicture(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='pictures')
+    picture = models.ImageField(upload_to='product_images/')
 
 class ProductReview(models.Model):
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
