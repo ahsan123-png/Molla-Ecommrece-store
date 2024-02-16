@@ -105,14 +105,18 @@ def getProduct(request, id):
             product_serializer = ProductSerializer(product, context={"request": request}).data
             product_images = ProductPicture.objects.filter(product_id=id)
             product_images_serializer = ProductPictureSerializer(product_images, many=True).data
-            return JsonResponse({
-                "product": product_serializer,
+            return render(request, "product-detail.html", {
+                "product_data": product_serializer,
                 "product_images": product_images_serializer
             })
         except Exception as e:
-            return JsonResponse({"error": f"Internal server error: {e}"}, status=500)
+            return render(request, "error.html", {
+                "error": f"Internal server error: {e}"
+            }, status=500)
     else:
-        return JsonResponse({"error": f"Method {request.method} not allowed"}, status=405)
+        return render(request, "404.html", {
+            "error": f"Method {request.method} not allowed"
+        }, status=405)
 # # =========== update Blog ================
 @csrf_exempt
 def updateProduct(request, id):

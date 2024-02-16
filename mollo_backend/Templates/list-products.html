@@ -501,7 +501,7 @@
                             <div class="col-6 col-md-4 col-lg-4 col-xl-3 col-xxl-2">
                                 <div class="product">
                                     <figure class="product-media">
-                                        <a href="{% url 'get_blog' id=product.id %}">
+                                        <a href="{% url 'getProduct' id=product.id %}">
                                         {% if product.product_pictures %}
                                             <img src="{{ product.product_pictures.first.picture.url }}" alt="Product image" class="product-image">
                                         </a>
@@ -519,7 +519,7 @@
                                         <div class="product-cat">
                                             <a href="#">{{ product.category }}</a>
                                         </div><!-- End .product-cat -->
-                                        <h3 class="product-title"><a href="{% url 'get_blog' id=product.id %}">{{ product.product_name }}</a></h3><!-- End .product-title -->
+                                        <h3 class="product-title"><a href="{% url 'getProduct' id=product.id %}">{{ product.product_name }}</a></h3><!-- End .product-title -->
                                         <div class="product-price">
                                             ${{ product.price }}
                                         </div><!-- End .product-price -->
