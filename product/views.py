@@ -3,9 +3,9 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
-from product.models import Inventory, Product, ProductPicture
+from product.models import Inventory, Product, ProductPicture, ProductVariant
 from users.views import bad_response,good_response,get_request_body
-from .serializers import ProductPictureSerializer, ProductSerializer
+from .serializers import ProductPictureSerializer, ProductSerializer, ProductVariantSerializer
 # Create your views here.
 def product_details(request):
     return render(request,"product-detail.html")
@@ -21,38 +21,42 @@ def addProduct(request):
         description = request.POST.get('description')
         brand = request.POST.get('brand')
         price = request.POST.get('price')
-        color = request.POST.get('color')
-        size = request.POST.get('size')
-        stock = request.POST.get('stock')
         category = request.POST.get('category')
         subcategory = request.POST.get('subcategory')
         product_type = request.POST.get('product_type')
         product_pictures = request.FILES.getlist('pictures')  # Get list of uploaded images
-        product = Product(
+        
+        # Create the product
+        product = Product.objects.create(
             product_name=product_name,
             description=description,
             brand=brand,
             price=price,
-            color=color,
-            size=size,
-            stock=stock,
             category=category,
             subcategory=subcategory,
             productType=product_type,
         )
-        product.save()
         
         # Create ProductPicture instances for each uploaded image
         for picture in product_pictures:
             product_picture = ProductPicture.objects.create(product=product, picture=picture)
             product_picture.save()
+        # Process product variants and add them to the database
+        colors = request.POST.getlist('color[]')
+        sizes = request.POST.getlist('size[]')
+        stocks = request.POST.getlist('stock[]')
+        
+        for color in colors:
+            for size, stock in zip(sizes, stocks):
+                product_variant = ProductVariant.objects.create(product=product, color=color, size=size, stock=stock)
+                product_variant.save()
+        # Calculate total stock quantity for inventory
+        total_stock_quantity = sum(int(stock) for stock in stocks)
+        
         # Update or create inventory entry
-        inventory, created = Inventory.objects.get_or_create(
-            product=product,
-            defaults={'stock_quantity': stock}
-        )
+        inventory, created = Inventory.objects.get_or_create(product=product, defaults={'stock_quantity': total_stock_quantity})
         if not created:
-            inventory.stock_quantity = stock
+            inventory.stock_quantity = total_stock_quantity
             inventory.save()
 
         return redirect('add')
@@ -105,12 +109,16 @@ def getProduct(request, id):
             product_serializer = ProductSerializer(product, context={"request": request}).data
             product_images = ProductPicture.objects.filter(product_id=id)
             product_images_serializer = ProductPictureSerializer(product_images, many=True).data
+            product_variants = ProductVariant.objects.filter(product=product)
+            unique_colors = set(variant.color for variant in product_variants)
+            # variants_serializer = ProductVariantSerializer(variants, many=True).data
             return render(request, "product-detail.html", {
                 "product_data": product_serializer,
-                "product_images": product_images_serializer
+                "product_images": product_images_serializer,
+                "unique_colors": unique_colors,
             })
         except Exception as e:
-            return render(request, "error.html", {
+            return render(request, "404.html", {
                 "error": f"Internal server error: {e}"
             }, status=500)
     else:

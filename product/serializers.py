@@ -10,13 +10,20 @@ class ProductSerializer(serializers.ModelSerializer):
             'description',
             'brand',
             'price',
-            'color',
-            'size',
-            'stock',
             'category',
             'subcategory',
             'productType',
             'productPictures',  # Updated field name
+        )
+class ProductVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ProductVariant
+        fields = (
+            'id',
+            'product',
+            'color',
+            'size',
+            'stock',
         )
 
 class ProductReviewSerializer(serializers.ModelSerializer):
