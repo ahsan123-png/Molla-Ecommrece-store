@@ -49,18 +49,18 @@
                                         </figure><!-- End .product-main-image -->
                                         <div id="product-zoom-gallery" class="product-image-gallery">
                                             {% for image in product_images %}
-                                            <a class="product-gallery-item {% if forloop.first %}active{% endif %}" href="#" data-image="{{ image.picture }}" data-zoom-image="{{ image.picture }}">
+                                            <a class="product-gallery-item {% if forloop.first %}active{% endif %}" href="#" data-image="{{ image.picture }}" data-zoom-image="{{ image.picture }}" onclick="changeMainImage(this)">
                                                 <img src="{{ image.picture }}" alt="product image">
                                             </a>
                                             {% endfor %}
-                                        </div>
+                                        </div>                                        
                                     </div>
                                 </div>
                             </div><!-- End .col-md-6 -->
 
                             <div class="col-md-6">
                                 <div class="product-details product-details-centered">
-                                    <h1 class="product-title">Beige metal hoop tote bag</h1><!-- End .product-title -->
+                                    <h1 class="product-title">{{ product_data.product_name }}</h1><!-- End .product-title -->
 
                                     <div class="ratings-container">
                                         <div class="ratings">
@@ -70,19 +70,19 @@
                                     </div><!-- End .rating-container -->
 
                                     <div class="product-price">
-                                        $76.00
+                                        ${{ product_data.price }}
                                     </div><!-- End .product-price -->
 
                                     <div class="product-content">
-                                        <p>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero.</p>
+                                        <p>{{ product_data.description }}</p>
                                     </div><!-- End .product-content -->
 
                                     <div class="details-filter-row details-row-size">
                                         <label>Color:</label>
 
                                         <div class="product-nav product-nav-dots">
-                                            <a href="#" class="active" style="background: #cc9966;"><span class="sr-only">Color name</span></a>
-                                            <a href="#" style="background: #333333;"><span class="sr-only">Color name</span></a>
+                                            <a href="#" class="active" style="background: #0267a3;"><span class="sr-only">Color name</span></a>
+                                            <a href="#" style="background:#adc1c9;"><span class="sr-only">Color name</span></a>
                                         </div><!-- End .product-nav -->
                                     </div><!-- End .details-filter-row -->
 
@@ -467,9 +467,26 @@
             </div><!-- End .page-content -->
         </main><!-- End .main -->
         <script>
-            $(document).ready(function() {
-                $('.zoom').zoom();
-            });
+            function changeMainImage(thumbnail) {
+                // Remove the 'active' class from all thumbnails
+                var thumbnails = document.getElementsByClassName('product-gallery-item');
+                for (var i = 0; i < thumbnails.length; i++) {
+                    thumbnails[i].classList.remove('active');
+                }
+        
+                // Add the 'active' class to the clicked thumbnail
+                thumbnail.classList.add('active');
+        
+                // Update the main image source to the clicked thumbnail's source
+                var mainImage = document.getElementById('product-zoom');
+                var thumbnailImage = thumbnail.getElementsByTagName('img')[0];
+                mainImage.src = thumbnailImage.src;
+                mainImage.dataset.zoomImage = thumbnailImage.src;
+        
+                // Prevent the default link behavior
+                return false;
+            }
         </script>
+        
         
 {% endblock  %}
