@@ -111,11 +111,13 @@ def getProduct(request, id):
             product_images_serializer = ProductPictureSerializer(product_images, many=True).data
             product_variants = ProductVariant.objects.filter(product=product)
             unique_colors = set(variant.color for variant in product_variants)
+            unique_sizes = set(variant.size for variant in product_variants)
             # variants_serializer = ProductVariantSerializer(variants, many=True).data
             return render(request, "product-detail.html", {
                 "product_data": product_serializer,
                 "product_images": product_images_serializer,
                 "unique_colors": unique_colors,
+                "unique_sizes": unique_sizes
             })
         except Exception as e:
             return render(request, "404.html", {

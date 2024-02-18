@@ -82,9 +82,9 @@
                                     </div><!-- End .product-content -->
 
                                     <div class="details-filter-row details-row-size">
-                                        <label for="color_select">Color:</label>
-                                        <div class="product-nav product-nav-dots">
-                                            <select id="color_select" name="color_select">
+                                        <label for="color_select">Available Colors:</label>
+                                        <div class="select-custom">
+                                            <select id="color_select" name="color_select"  class="form-control">
                                                 {% for color_name in unique_colors %}
                                                     <option value="{{ color_name }}">{{ color_name }}</option>
                                                 {% endfor %}
@@ -97,11 +97,9 @@
                                         <label for="size">Size:</label>
                                         <div class="select-custom">
                                             <select name="size" id="size" class="form-control">
-                                                <option value="#" selected="selected">One Size</option>
-                                                <option value="s">Small</option>
-                                                <option value="m">Medium</option>
-                                                <option value="l">Large</option>
-                                                <option value="xl">Extra Large</option>
+                                                {% for size in unique_sizes %}
+                                                    <option value="{{ size }}">{{ size }}</option>
+                                                {% endfor %}
                                             </select>
                                         </div><!-- End .select-custom -->
 
