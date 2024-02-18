@@ -64,8 +64,8 @@
                             <li>
                                 <a href="#">Links</a>
                                 <ul>
-                                    <li><a href="tel:#"><i class="icon-phone"></i>Call: +971 58956564</a></li>
-                                    <li><a href="{% url "wishlist" %}"><i class="icon-heart-o"></i>Wishlist <span>(3)</span></a></li>
+                                    <li><a href="tel:#"><i class="icon-phone"></i>Call: +971 58956564 </a></li>
+                                    <li><a href="{% url "wishlist" %}"><i class="icon-heart-o"></i>Wishlist <span>{{wishlist_count}}</span></a></li>
                                     <li><a href="{% url "about" %}">About Us</a></li>
                                     <li><a href="{% url "contact" %}">Contact Us</a></li>
                                     {% if request.user.is_authenticated %}

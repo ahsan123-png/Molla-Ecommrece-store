@@ -116,7 +116,7 @@
                                         </div><!-- End .details-action-col -->
 
                                         <div class="details-action-wrapper">
-                                            <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                                            <a href="#" class="btn-product btn-wishlist" title="Wishlist" onclick="addToWishlist(event, {{ product_data.id }})"><span>Add to Wishlist</span></a>
                                             <a href="#" class="btn-product btn-compare" title="Compare"><span>Add to Compare</span></a>
                                         </div><!-- End .details-action-wrapper -->
                                     </div><!-- End .product-details-action -->
@@ -265,7 +265,9 @@
                                 </a>
 
                                 <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable" onclick="addToWishlist(event, {{ product_data.id }})">
+                                        <span>Add to Wishlist</span>
+                                    </a>
                                     <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
                                     <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
                                 </div><!-- End .product-action-vertical -->
@@ -447,24 +449,43 @@
         </main><!-- End .main -->
         <script>
             function changeMainImage(thumbnail) {
-                // Remove the 'active' class from all thumbnails
                 var thumbnails = document.getElementsByClassName('product-gallery-item');
                 for (var i = 0; i < thumbnails.length; i++) {
                     thumbnails[i].classList.remove('active');
                 }
-        
-                // Add the 'active' class to the clicked thumbnail
                 thumbnail.classList.add('active');
-        
-                // Update the main image source to the clicked thumbnail's source
                 var mainImage = document.getElementById('product-zoom');
                 var thumbnailImage = thumbnail.getElementsByTagName('img')[0];
                 mainImage.src = thumbnailImage.src;
                 mainImage.dataset.zoomImage = thumbnailImage.src;
-        
-                // Prevent the default link behavior
                 return false;
             }
+            //this is the function to store value a added to wishlist 
+            function addToWishlist(event, productId) {
+                event.preventDefault();
+                var color = $('#color_select').val();
+                var size = $('#size').val();
+                var quantity = $('#qty').val();
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/add_wishlist/',
+                    method: 'POST',
+                    data: {
+                        product_id: productId,
+                        color_select: color,
+                        size: size,
+                        quantity: quantity
+                    },
+                    success: function(response) {
+                        alert('Product added to wishlist successfully');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error adding product to wishlist:', error);
+                    }
+                });
+            }
+            
+            
+            
         </script>
         
         
