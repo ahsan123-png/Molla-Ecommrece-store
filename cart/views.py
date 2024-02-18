@@ -55,4 +55,11 @@ def wishlist(request):
         products_info.append(product_info)
     return render(request, 'wishlist.html', {'products_info': products_info})
 
-
+#wish list count on na
+def base(request):
+    if request.user.is_authenticated:
+        # Get the wishlist count for the logged-in user
+        wishlist_count = Wishlist.objects.filter(user=request.user).count()
+    else:
+        wishlist_count = 0
+    return render(request, 'base.html', {'wishlist_count': wishlist_count})
