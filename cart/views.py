@@ -39,5 +39,20 @@ def cart(request):
 
 
 def wishlist(request):
-    return render(request,"wishlist.html")
+    # Get the user's wishlist items
+    wishlist_items = Wishlist.objects.filter(user=request.user)
+    products_info = []
+    for item in wishlist_items:
+        product = item.product
+        product_info = {
+            'name': product.product_name,
+            'price': product.price,
+            'availability': 'In stock' if product.inventory.stock_quantity > 0 else 'Out of stock',
+            'image': None 
+        }
+        if product.pictures.exists():
+            product_info['image'] = product.pictures.first().picture.url
+        products_info.append(product_info)
+    return render(request, 'wishlist.html', {'products_info': products_info})
+
 
