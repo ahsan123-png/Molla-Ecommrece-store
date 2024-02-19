@@ -1,17 +1,12 @@
 import json
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
-
-from product.models import Product
+from django.core.paginator import Paginator
+from product.models import Inventory, Product, ProductPicture, ProductVariant
 from users.views import bad_response,good_response,get_request_body
-from .serializers import ProductSerializer
+from .serializers import ProductPictureSerializer, ProductSerializer, ProductVariantSerializer
 # Create your views here.
-
-
-def products(request):
-    return render(request,"list-products.html")
-
 def product_details(request):
     return render(request,"product-detail.html")
 @csrf_exempt
@@ -26,89 +21,112 @@ def addProduct(request):
         description = request.POST.get('description')
         brand = request.POST.get('brand')
         price = request.POST.get('price')
-        color = request.POST.get('color')
-        size = request.POST.get('size')
-        stock = request.POST.get('stock')
         category = request.POST.get('category')
         subcategory = request.POST.get('subcategory')
         product_type = request.POST.get('product_type')
-        productPicture = request.FILES.get('picture')
-        product = Product(
+        product_pictures = request.FILES.getlist('pictures')  # Get list of uploaded images
+        
+        # Create the product
+        product = Product.objects.create(
             product_name=product_name,
             description=description,
             brand=brand,
             price=price,
-            color=color,
-            size=size,
-            stock=stock,
             category=category,
             subcategory=subcategory,
-            productType=product_type,  # Add product type here
-            productPicture=productPicture,
+            productType=product_type,
         )
-        try:
-            product.save()
-            return redirect('blog')
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+        
+        # Create ProductPicture instances for each uploaded image
+        for picture in product_pictures:
+            product_picture = ProductPicture.objects.create(product=product, picture=picture)
+            product_picture.save()
+        # Process product variants and add them to the database
+        colors = request.POST.getlist('color[]')
+        sizes = request.POST.getlist('size[]')
+        stocks = request.POST.getlist('stock[]')
+        
+        for color in colors:
+            for size, stock in zip(sizes, stocks):
+                product_variant = ProductVariant.objects.create(product=product, color=color, size=size, stock=stock)
+                product_variant.save()
+        # Calculate total stock quantity for inventory
+        total_stock_quantity = sum(int(stock) for stock in stocks)
+        
+        # Update or create inventory entry
+        inventory, created = Inventory.objects.get_or_create(product=product, defaults={'stock_quantity': total_stock_quantity})
+        if not created:
+            inventory.stock_quantity = total_stock_quantity
+            inventory.save()
+
+        return redirect('add')
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-
-
 # =========== get all blogs ==============
-def allProduct(request):
+def products(request):
     try:
-        blog_data = []
-        blogs = Product.objects.all()
-        if not blogs:
-            return bad_response(
-                request.method, {
-                    "error": "No Blogs Data available"
-                }, status=404
+        product_data = []
+        products = Product.objects.all()
+        paginator = Paginator(products, 12)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        if not products:
+            return render(
+                request, 
+                "list-products.html",
+                {
+                    "error": "No products available"
+                }
             )
-        for blog in blogs:
-            blog_serializer = ProductSerializer(blog, context={"request": request}).data
-            blog_data.append(blog_serializer)
-        return good_response(
-            request.method, {
-                "blog_data": blog_data
-            }, status=200
+        for product in page_obj:
+            product_serializer = ProductSerializer(product, context={"request": request}).data
+            product_pictures = ProductPicture.objects.filter(product=product)
+            product_serializer['product_pictures'] = product_pictures
+            product_data.append(product_serializer)
+        return render(
+            request, 
+            "list-products.html",
+            {
+                "product_data": product_data,
+                "page_obj": page_obj
+            }
         )
     except Exception as e:
-        return bad_response(
-            request.method, {
+        return render(
+            request, 
+            "list-products.html",
+            {
                 "error": f"Internal Server Error: {e}"
-            }, status=500
+            },
+            status=500
         )
 # # =========== Get blog by Id =============
-def getProduct(request,id):
+def getProduct(request, id):
     if request.method == "GET":
         try:
-            product=Product.objects.get(id = id)
-            if product is None:
-                return bad_response(
-                    request.method,{
-                        "error" : f"User with id {id} Doesn't Exits"
-                    },status=404
-                )
-            user_serializer=ProductSerializer(product,context={"request" : request}).data
-            return good_response(
-                request.method,{
-                    "success" : user_serializer
-                },status=200
-            )
+            product = get_object_or_404(Product, id=id)
+            product_serializer = ProductSerializer(product, context={"request": request}).data
+            product_images = ProductPicture.objects.filter(product_id=id)
+            product_images_serializer = ProductPictureSerializer(product_images, many=True).data
+            product_variants = ProductVariant.objects.filter(product=product)
+            unique_colors = set(variant.color for variant in product_variants)
+            unique_sizes = set(variant.size for variant in product_variants)
+            # variants_serializer = ProductVariantSerializer(variants, many=True).data
+            return render(request, "product-detail.html", {
+                "product_data": product_serializer,
+                "product_images": product_images_serializer,
+                "unique_colors": unique_colors,
+                "unique_sizes": unique_sizes
+            })
         except Exception as e:
-            return bad_response(
-                request.method,{
-                    "error" : f"Internal server error : {e}"
-                },status=500
-            )
+            return render(request, "404.html", {
+                "error": f"Internal server error: {e}"
+            }, status=500)
     else:
-        return bad_response(
-            request.method,
-            f"Method {request.method} Not Allowed"
-        )
+        return render(request, "404.html", {
+            "error": f"Method {request.method} not allowed"
+        }, status=405)
 # # =========== update Blog ================
 @csrf_exempt
 def updateProduct(request, id):

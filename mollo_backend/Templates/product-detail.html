@@ -2,6 +2,14 @@
 
 {% block body%}
 {% load static %}
+<head>
+    <!-- Include jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+    <!-- Include jQuery Zoom plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-zoom/1.7.21/jquery.zoom.min.js"></script>
+</head>
+
 <main class="main">
             <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
                 <div class="container d-flex align-items-center">
@@ -33,37 +41,26 @@
                                 <div class="product-gallery product-gallery-vertical">
                                     <div class="row">
                                         <figure class="product-main-image">
-                                            <img id="product-zoom" src="{% static 'assets/images/products/single/centered/1.jpg' %}" data-zoom-image="{% static 'assets/images/products/single/centered/1-big.jpg' %}" alt="product image">
+                                            <img id="product-zoom" src="{{ product_images.0.picture }}" data-zoom-image="{{ product_images.0.picture }}" alt="product image">
 
                                             <a href="#" id="btn-product-gallery" class="btn-product-gallery">
                                                 <i class="icon-arrows"></i>
                                             </a>
                                         </figure><!-- End .product-main-image -->
-
                                         <div id="product-zoom-gallery" class="product-image-gallery">
-                                            <a class="product-gallery-item active" href="#" data-image="{% static 'assets/images/products/single/centered/1.jpg' %}" data-zoom-image="{% static 'assets/images/products/single/centered/1-big.jpg' %}">
-                                                <img src="{% static 'assets/images/products/single/centered/1-small.jpg' %}" alt="product side">
+                                            {% for image in product_images %}
+                                            <a class="product-gallery-item {% if forloop.first %}active{% endif %}" href="#" data-image="{{ image.picture }}" data-zoom-image="{{ image.picture }}" onclick="changeMainImage(this)">
+                                                <img src="{{ image.picture }}" alt="product image">
                                             </a>
-
-                                            <a class="product-gallery-item" href="#" data-image="{% static 'assets/images/products/single/centered/2.jpg' %}" data-zoom-image="{% static 'assets/images/products/single/centered/2-big.jpg' %}">
-                                                <img src="{% static 'assets/images/products/single/centered/2-small.jpg' %}" alt="product cross">
-                                            </a>
-
-                                            <a class="product-gallery-item" href="#" data-image="{% static 'assets/images/products/single/centered/3.jpg' %}" data-zoom-image="{% static 'assets/images/products/single/centered/3-big.jpg' %}">
-                                                <img src="{% static 'assets/images/products/single/centered/3-small.jpg' %}" alt="product with model">
-                                            </a>
-
-                                            <a class="product-gallery-item" href="#" data-image="{% static 'assets/images/products/single/centered/4.jpg' %}" data-zoom-image="{% static 'assets/images/products/single/centered/4-big.jpg' %}">
-                                                <img src="{% static 'assets/images/products/single/centered/4-small.jpg' %}" alt="product back">
-                                            </a>
-                                        </div><!-- End .product-image-gallery -->
-                                    </div><!-- End .row -->
-                                </div><!-- End .product-gallery -->
+                                            {% endfor %}
+                                        </div>                                        
+                                    </div>
+                                </div>
                             </div><!-- End .col-md-6 -->
 
                             <div class="col-md-6">
                                 <div class="product-details product-details-centered">
-                                    <h1 class="product-title">Beige metal hoop tote bag</h1><!-- End .product-title -->
+                                    <h1 class="product-title">{{ product_data.product_name }}</h1><!-- End .product-title -->
 
                                     <div class="ratings-container">
                                         <div class="ratings">
@@ -73,31 +70,36 @@
                                     </div><!-- End .rating-container -->
 
                                     <div class="product-price">
-                                        $76.00
+                                        ${{ product_data.price }}
                                     </div><!-- End .product-price -->
 
                                     <div class="product-content">
-                                        <p>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero.</p>
+                                        <p>
+                                            {% with product_data.description|truncatewords:30 as truncated_description %}
+                                                {{ truncated_description }}
+                                            {% endwith %}
+                                        </p>
                                     </div><!-- End .product-content -->
 
                                     <div class="details-filter-row details-row-size">
-                                        <label>Color:</label>
-
-                                        <div class="product-nav product-nav-dots">
-                                            <a href="#" class="active" style="background: #cc9966;"><span class="sr-only">Color name</span></a>
-                                            <a href="#" style="background: #333333;"><span class="sr-only">Color name</span></a>
-                                        </div><!-- End .product-nav -->
-                                    </div><!-- End .details-filter-row -->
+                                        <label for="color_select">Available Colors:</label>
+                                        <div class="select-custom">
+                                            <select id="color_select" name="color_select"  class="form-control">
+                                                {% for color_name in unique_colors %}
+                                                    <option value="{{ color_name }}">{{ color_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
 
                                     <div class="details-filter-row details-row-size">
                                         <label for="size">Size:</label>
                                         <div class="select-custom">
                                             <select name="size" id="size" class="form-control">
-                                                <option value="#" selected="selected">One Size</option>
-                                                <option value="s">Small</option>
-                                                <option value="m">Medium</option>
-                                                <option value="l">Large</option>
-                                                <option value="xl">Extra Large</option>
+                                                {% for size in unique_sizes %}
+                                                    <option value="{{ size }}">{{ size }}</option>
+                                                {% endfor %}
                                             </select>
                                         </div><!-- End .select-custom -->
 
@@ -114,7 +116,7 @@
                                         </div><!-- End .details-action-col -->
 
                                         <div class="details-action-wrapper">
-                                            <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                                            <a href="#" class="btn-product btn-wishlist" title="Wishlist" onclick="addToWishlist(event, {{ product_data.id }})"><span>Add to Wishlist</span></a>
                                             <a href="#" class="btn-product btn-compare" title="Compare"><span>Add to Compare</span></a>
                                         </div><!-- End .details-action-wrapper -->
                                     </div><!-- End .product-details-action -->
@@ -122,9 +124,9 @@
                                     <div class="product-details-footer">
                                         <div class="product-cat">
                                             <span>Category:</span>
-                                            <a href="#">Women</a>,
-                                            <a href="#">Dresses</a>,
-                                            <a href="#">Yellow</a>
+                                            <a href="#">{{ product_data.productType }}</a>,
+                                            <a href="#">{{ product_data.category }}</a>,
+                                            <a href="#">{{ product_data.subcategory }}</a>,
                                         </div><!-- End .product-cat -->
 
                                         <div class="social-icons social-icons-sm">
@@ -159,33 +161,7 @@
                             <div class="tab-pane fade show active" id="product-desc-tab" role="tabpanel" aria-labelledby="product-desc-link">
                                 <div class="product-desc-content">
                                     <h3>Product Information</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis. Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. </p>
-                                    <ul>
-                                        <li>Nunc nec porttitor turpis. In eu risus enim. In vitae mollis elit. </li>
-                                        <li>Vivamus finibus vel mauris ut vehicula.</li>
-                                        <li>Nullam a magna porttitor, dictum risus nec, faucibus sapien.</li>
-                                    </ul>
-
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis. Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. </p>
-                                </div><!-- End .product-desc-content -->
-                            </div><!-- .End .tab-pane -->
-                            <div class="tab-pane fade" id="product-info-tab" role="tabpanel" aria-labelledby="product-info-link">
-                                <div class="product-desc-content">
-                                    <h3>Information</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. </p>
-
-                                    <h3>Fabric & care</h3>
-                                    <ul>
-                                        <li>Faux suede fabric</li>
-                                        <li>Gold tone metal hoop handles.</li>
-                                        <li>RI branding</li>
-                                        <li>Snake print trim interior </li>
-                                        <li>Adjustable cross body strap</li>
-                                        <li> Height: 31cm; Width: 32cm; Depth: 12cm; Handle Drop: 61cm</li>
-                                    </ul>
-
-                                    <h3>Size</h3>
-                                    <p>one size</p>
+                                    <p>{{ product_data.description }} </p>
                                 </div><!-- End .product-desc-content -->
                             </div><!-- .End .tab-pane -->
                             <div class="tab-pane fade" id="product-shipping-tab" role="tabpanel" aria-labelledby="product-shipping-link">
@@ -289,7 +265,9 @@
                                 </a>
 
                                 <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable" onclick="addToWishlist(event, {{ product_data.id }})">
+                                        <span>Add to Wishlist</span>
+                                    </a>
                                     <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
                                     <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
                                 </div><!-- End .product-action-vertical -->
@@ -469,5 +447,46 @@
                 </div><!-- End .container -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
-
+        <script>
+            function changeMainImage(thumbnail) {
+                var thumbnails = document.getElementsByClassName('product-gallery-item');
+                for (var i = 0; i < thumbnails.length; i++) {
+                    thumbnails[i].classList.remove('active');
+                }
+                thumbnail.classList.add('active');
+                var mainImage = document.getElementById('product-zoom');
+                var thumbnailImage = thumbnail.getElementsByTagName('img')[0];
+                mainImage.src = thumbnailImage.src;
+                mainImage.dataset.zoomImage = thumbnailImage.src;
+                return false;
+            }
+            //this is the function to store value a added to wishlist 
+            function addToWishlist(event, productId) {
+                event.preventDefault();
+                var color = $('#color_select').val();
+                var size = $('#size').val();
+                var quantity = $('#qty').val();
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/add_wishlist/',
+                    method: 'POST',
+                    data: {
+                        product_id: productId,
+                        color_select: color,
+                        size: size,
+                        quantity: quantity
+                    },
+                    success: function(response) {
+                        alert('Product added to wishlist successfully');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error adding product to wishlist:', error);
+                    }
+                });
+            }
+            
+            
+            
+        </script>
+        
+        
 {% endblock  %}
