@@ -8,7 +8,27 @@ from .models import Cart, Wishlist
 from django.views.decorators.csrf import csrf_exempt
 # ==========================================
 def cart(request):
-    return render(request,"cart.html")
+    if request.method == "GET":
+        cart_data = []
+        user = request.user
+        if isinstance(user, UserEx):
+            cart_items = Cart.objects.filter(user=user)
+        else:
+            cart_items = Cart.objects.filter(user=user)
+        for item in cart_items:
+            product = item.product
+            cart_item_data = {
+                'product_name': product.product_name,
+                'price': product.price,
+                'quantity': item.quantity,
+                'product_total': item.subtotal * item.quantity,
+                'total': item.subtotal,
+                'image': None 
+            }
+            if product.pictures.exists():
+                cart_item_data['image'] = product.pictures.first().picture.url
+            cart_data.append(cart_item_data)
+    return render(request, 'cart.html', {'cart_data': cart_data})
 # ==== add items to wishlist page =====
 @csrf_exempt
 def addToWishlist(request):
