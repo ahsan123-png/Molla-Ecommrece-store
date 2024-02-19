@@ -64,7 +64,7 @@
 											<td class="total-col">${{item.product_total}}</td>
 											<td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
 										</tr>
-									{% endfor %}
+									
 									</tbody>
 								</table><!-- End .table table-wishlist -->
 	                			<div class="cart-bottom">
@@ -89,9 +89,8 @@
 	                					<tbody>
 	                						<tr class="summary-subtotal">
 	                							<td>Subtotal:</td>
-												{% for item in cart_data %}
+												
 	                							<td>${{item.total}}</td>
-												{% endfor %}
 	                						</tr><!-- End .summary-subtotal -->
 	                						<tr class="summary-shipping">
 	                							<td>Shipping:</td>
@@ -135,8 +134,9 @@
 
 	                						<tr class="summary-total">
 	                							<td>Total:</td>
-	                							<td>$160.00</td>
+	                							<td>${{item.total}}</td>
 	                						</tr><!-- End .summary-total -->
+											{% endfor %}
 	                					</tbody>
 	                				</table><!-- End .table table-summary -->
 
@@ -150,4 +150,34 @@
                 </div><!-- End .cart -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
+		{% comment %} add js to calcute live counts of quantity  {% endcomment %}
+		<script>
+			// Function to calculate and update product total
+			function updateProductTotal(input) {
+				var row = input.closest('tr'); // Get the parent row of the input
+				var price = parseFloat(row.querySelector('.price-col').textContent.replace('$', ''));
+				var quantity = parseInt(input.value);
+				var total = price * quantity;
+				row.querySelector('.total-col').textContent = '$' + total.toFixed(2);
+				updateSubtotalAndTotal();
+			}
+		
+			// Function to update subtotal and total prices
+			function updateSubtotalAndTotal() {
+				var subtotal = 0;
+				document.querySelectorAll('.total-col').forEach(function(element) {
+					subtotal += parseFloat(element.textContent.replace('$', ''));
+				});
+				document.querySelector('.summary-subtotal td:last-child').textContent = '$' + subtotal.toFixed(2);
+				document.querySelector('.summary-total td:last-child').textContent = '$' + subtotal.toFixed(2);
+			}
+		
+			// Attach event listeners to quantity inputs
+			document.querySelectorAll('.cart-product-quantity input').forEach(function(input) {
+				input.addEventListener('change', function() {
+					updateProductTotal(this);
+				});
+			});
+		</script>
+		
  {% endblock body %}
