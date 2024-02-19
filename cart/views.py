@@ -11,6 +11,7 @@ def cart(request):
     if request.method == "GET":
         cart_data = []
         user = request.user
+        initial_subtotal = 0 
         if isinstance(user, UserEx):
             cart_items = Cart.objects.filter(user=user)
         else:
@@ -28,7 +29,8 @@ def cart(request):
             if product.pictures.exists():
                 cart_item_data['image'] = product.pictures.first().picture.url
             cart_data.append(cart_item_data)
-    return render(request, 'cart.html', {'cart_data': cart_data})
+            initial_subtotal += item.subtotal
+    return render(request, 'cart.html', {'cart_data': cart_data,"initial_subtotal" :initial_subtotal })
 # ==== add items to wishlist page =====
 @csrf_exempt
 def addToWishlist(request):
