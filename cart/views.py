@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 # Create your views here.
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-
+from django.http import HttpResponse, JsonResponse
+from product.models import Product
 from users.models import UserEx
 from .models import Cart, Wishlist
 from django.views.decorators.csrf import csrf_exempt
@@ -73,7 +73,34 @@ def addCart(request, id):
             cart_item.save()
         wishlist_item.delete()
         return redirect('cart')
-
+# == add a product into cart ===
+@csrf_exempt
+def addProductToCart(request, id):
+    if request.method == "GET":
+        try:
+            product_item = Product.objects.get(id=id)
+            user = request.user
+            if isinstance(user, UserEx):
+                user_ex = user
+            else:
+                user_ex =UserEx.objects.get(id=user.id)
+            cart_item, created = Cart.objects.get_or_create(
+                user=user_ex,
+                product=product_item,
+                defaults={
+                    'quantity': 1,
+                    'subtotal': product_item.price 
+                }
+            )
+            if not created:
+                cart_item.quantity += 1 
+                cart_item.subtotal += product_item.price
+                cart_item.save()
+            return redirect('cart')
+        except Product.DoesNotExist:
+            return HttpResponse("Product not found", status=404)
+    else:
+        return HttpResponse("Method not allowed", status=405)
 
 #== wish list count on nav bar of base.html ===
 def base(request):

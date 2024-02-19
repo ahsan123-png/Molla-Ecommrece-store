@@ -84,8 +84,8 @@
                 method: 'POST',
                 data: {}, // You can include additional data here if needed
                 success: function(response) {
-                    alert('Product added to cart successfully');
-                    // Optionally, you can display a success message or update the UI
+                    // Redirect to the cart page
+                    window.location.href = '{% url "cart" %}';
                 },
                 error: function(xhr, status, error) {
                     console.error('Error adding product to cart:', error);
