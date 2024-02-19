@@ -38,9 +38,8 @@
 											<th></th>
 										</tr>
 									</thead>
-
-									<tbody>
-									{% for item in cart_data %}
+									<tbody id="cart-items">
+										{% for item in cart_data %}
 										<tr>
 											<td class="product-col">
 												<div class="product">
@@ -49,23 +48,23 @@
 															<img src="{{ item.image }}" alt="Product image">
 														</a>
 													</figure>
-
 													<h3 class="product-title">
 														<a href="#">{{ item.product_name }}</a>
-													</h3><!-- End .product-title -->
-												</div><!-- End .product -->
+													</h3>
+												</div>
 											</td>
 											<td class="price-col">${{ item.price }}</td>
 											<td class="quantity-col">
-                                                <div class="cart-product-quantity">
-                                                    <input type="number" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
-                                                </div><!-- End .cart-product-quantity -->
-                                            </td>
-											<td class="total-col">${{item.product_total}}</td>
+												<div class="cart-product-quantity">
+													<input type="number" class="form-control quantity-input" value="{{ item.quantity }}" min="1" max="10" step="1" data-decimals="0" required data-product-id="{{ item.id }}">
+												</div>
+											</td>
+											<td class="total-col total-{{ item.id }}">${{ item.product_total }}</td>
 											<td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
 										</tr>
-									
+										{% endfor %}
 									</tbody>
+									
 								</table><!-- End .table table-wishlist -->
 	                			<div class="cart-bottom">
 			            			<div class="cart-discount">
@@ -86,11 +85,10 @@
 	                				<h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
 
 	                				<table class="table table-summary">
-	                					<tbody>
+	                					<tbody>	
 	                						<tr class="summary-subtotal">
-	                							<td>Subtotal:</td>
-												
-	                							<td>${{item.total}}</td>
+												<td>Subtotal:</td>
+	                							<td>$0.00</td>
 	                						</tr><!-- End .summary-subtotal -->
 	                						<tr class="summary-shipping">
 	                							<td>Shipping:</td>
@@ -106,10 +104,10 @@
 	                							</td>
 	                							<td>$0.00</td>
 	                						</tr><!-- End .summary-shipping-row -->
-
+											
 	                						<tr class="summary-shipping-row">
-	                							<td>
-	                								<div class="custom-control custom-radio">
+												<td>
+													<div class="custom-control custom-radio">
 														<input type="radio" id="standart-shipping" name="shipping" class="custom-control-input">
 														<label class="custom-control-label" for="standart-shipping">Standart:</label>
 													</div><!-- End .custom-control -->
@@ -119,25 +117,25 @@
 
 	                						<tr class="summary-shipping-row">
 	                							<td>
-	                								<div class="custom-control custom-radio">
+													<div class="custom-control custom-radio">
 														<input type="radio" id="express-shipping" name="shipping" class="custom-control-input">
 														<label class="custom-control-label" for="express-shipping">Express:</label>
 													</div><!-- End .custom-control -->
 	                							</td>
 	                							<td>$20.00</td>
 	                						</tr><!-- End .summary-shipping-row -->
-
+											
 	                						<tr class="summary-shipping-estimate">
-	                							<td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
+												<td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
 	                							<td>&nbsp;</td>
 	                						</tr><!-- End .summary-shipping-estimate -->
-
+											
 	                						<tr class="summary-total">
-	                							<td>Total:</td>
-	                							<td>${{item.total}}</td>
+												<td>Total:</td>
+	                							<td>$0.00</td>
 	                						</tr><!-- End .summary-total -->
-											{% endfor %}
 	                					</tbody>
+										
 	                				</table><!-- End .table table-summary -->
 
 	                				<a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
@@ -152,7 +150,6 @@
         </main><!-- End .main -->
 		{% comment %} add js to calcute live counts of quantity  {% endcomment %}
 		<script>
-			// Function to calculate and update product total
 			function updateProductTotal(input) {
 				var row = input.closest('tr'); // Get the parent row of the input
 				var price = parseFloat(row.querySelector('.price-col').textContent.replace('$', ''));
@@ -161,8 +158,6 @@
 				row.querySelector('.total-col').textContent = '$' + total.toFixed(2);
 				updateSubtotalAndTotal();
 			}
-		
-			// Function to update subtotal and total prices
 			function updateSubtotalAndTotal() {
 				var subtotal = 0;
 				document.querySelectorAll('.total-col').forEach(function(element) {
@@ -171,13 +166,13 @@
 				document.querySelector('.summary-subtotal td:last-child').textContent = '$' + subtotal.toFixed(2);
 				document.querySelector('.summary-total td:last-child').textContent = '$' + subtotal.toFixed(2);
 			}
-		
-			// Attach event listeners to quantity inputs
 			document.querySelectorAll('.cart-product-quantity input').forEach(function(input) {
 				input.addEventListener('change', function() {
 					updateProductTotal(this);
 				});
 			});
 		</script>
+		
+		
 		
  {% endblock body %}
