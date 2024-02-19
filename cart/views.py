@@ -1,12 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 # Create your views here.
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 
 from users.models import UserEx
-from .models import Wishlist
+from .models import Cart, Wishlist
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import get_user_model
+# ==========================================
+def cart(request):
+    return render(request,"cart.html")
+# ==== add items to wishlist page =====
 @csrf_exempt
 def addToWishlist(request):
     if request.method == 'POST':
@@ -33,11 +36,7 @@ def addToWishlist(request):
         return JsonResponse({'message': 'Product added to wishlist successfully'}, status=201)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
-
-def cart(request):
-    return render(request,"cart.html")
-
-
+# ===== Get data from wishlist ======
 def wishlist(request):
     # Get the user's wishlist items
     wishlist_items = Wishlist.objects.filter(user=request.user)
@@ -45,6 +44,7 @@ def wishlist(request):
     for item in wishlist_items:
         product = item.product
         product_info = {
+            'wishlist_id': item.id,
             'name': product.product_name,
             'price': product.price,
             'availability': 'In stock' if product.inventory.stock_quantity > 0 else 'Out of stock',
@@ -54,8 +54,28 @@ def wishlist(request):
             product_info['image'] = product.pictures.first().picture.url
         products_info.append(product_info)
     return render(request, 'wishlist.html', {'products_info': products_info})
+#==== add wishlist item to cart ======
+@csrf_exempt
+def addCart(request, id):
+    if request.method == "POST":
+        wishlist_item = Wishlist.objects.get(id=id)
+        cart_item, created = Cart.objects.get_or_create(
+            user=wishlist_item.user,
+            product=wishlist_item.product,
+            defaults={
+                'quantity': wishlist_item.quantity,
+                'subtotal': wishlist_item.quantity * wishlist_item.product.price
+            }
+        )
+        if not created:
+            cart_item.quantity += wishlist_item.quantity
+            cart_item.subtotal += wishlist_item.quantity * wishlist_item.product.price
+            cart_item.save()
+        wishlist_item.delete()
+        return redirect('cart')
 
-#wish list count on na
+
+#== wish list count on nav bar of base.html ===
 def base(request):
     if request.user.is_authenticated:
         # Get the wishlist count for the logged-in user
