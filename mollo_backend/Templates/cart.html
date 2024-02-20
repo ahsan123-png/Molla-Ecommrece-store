@@ -59,7 +59,7 @@
 													<input type="number" class="form-control quantity-input" value="{{ item.quantity }}" min="1" max="10" step="1" data-decimals="0" required data-product-id="{{ item.id }}">
 												</div>
 											</td>
-											<td class="total-col total-{{ item.id }}">${{ item.product_total }}</td>
+											<td class="total-col total-{{ item.id }}">${{ item.total }}</td>
 											<td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
 										</tr>
 										{% endfor %}
@@ -88,8 +88,8 @@
 	                					<tbody>	
 	                						<tr class="summary-subtotal">
 												<td>Subtotal:</td>
-	                							<td>$0.00</td>
-	                						</tr><!-- End .summary-subtotal -->
+												<td>${{ initial_subtotal }}</td>
+											</tr>
 	                						<tr class="summary-shipping">
 	                							<td>Shipping:</td>
 	                							<td>&nbsp;</td>
@@ -102,7 +102,7 @@
 														<label class="custom-control-label" for="free-shipping">Free Shipping</label>
 													</div><!-- End .custom-control -->
 	                							</td>
-	                							<td>$0.00</td>
+	                							<td>${{ initial_subtotal }}</td>
 	                						</tr><!-- End .summary-shipping-row -->
 											
 	                						<tr class="summary-shipping-row">
@@ -150,6 +150,7 @@
         </main><!-- End .main -->
 		{% comment %} add js to calcute live counts of quantity  {% endcomment %}
 		<script>
+			// Function to calculate and update product total
 			function updateProductTotal(input) {
 				var row = input.closest('tr'); // Get the parent row of the input
 				var price = parseFloat(row.querySelector('.price-col').textContent.replace('$', ''));
@@ -158,20 +159,32 @@
 				row.querySelector('.total-col').textContent = '$' + total.toFixed(2);
 				updateSubtotalAndTotal();
 			}
+		
+			// Function to update subtotal and total prices
 			function updateSubtotalAndTotal() {
-				var subtotal = 0;
+				var initialSubtotal = parseFloat("{{ initial_subtotal }}");
+				var subtotal = initialSubtotal;
 				document.querySelectorAll('.total-col').forEach(function(element) {
 					subtotal += parseFloat(element.textContent.replace('$', ''));
 				});
 				document.querySelector('.summary-subtotal td:last-child').textContent = '$' + subtotal.toFixed(2);
 				document.querySelector('.summary-total td:last-child').textContent = '$' + subtotal.toFixed(2);
 			}
+		
+			// Attach event listeners to quantity inputs
 			document.querySelectorAll('.cart-product-quantity input').forEach(function(input) {
 				input.addEventListener('change', function() {
 					updateProductTotal(this);
 				});
 			});
+		
+			// Call the updateSubtotalAndTotal function initially
+			updateSubtotalAndTotal();
 		</script>
+		
+		
+		
+		
 		
 		
 		
