@@ -79,7 +79,7 @@
 	                					<tbody>	
 	                						<tr class="summary-subtotal">
 												<td>Subtotal:</td>
-												<td>${{ initial_subtotal }}</td>
+												<td>$0.00</td>
 											</tr>
 	                						<tr class="summary-shipping">
 	                							<td>Shipping:</td>
@@ -92,7 +92,7 @@
 														<label class="custom-control-label" for="free-shipping">Free Shipping</label>
 													</div><!-- End .custom-control -->
 	                							</td>
-	                							<td>${{ initial_subtotal }}</td>
+	                							<td>$0</td>
 	                						</tr><!-- End .summary-shipping-row -->
 	                						<tr class="summary-shipping-row">
 												<td>
@@ -145,7 +145,7 @@
 			}
 			// Function to update subtotal and total prices
 			function updateSubtotalAndTotal() {
-				var initialSubtotal = parseFloat("{{ initial_subtotal }}");
+				var initialSubtotal = parseFloat("0");
 				var subtotal = initialSubtotal;
 				document.querySelectorAll('.total-col').forEach(function(element) {
 					subtotal += parseFloat(element.textContent.replace('$', ''));
