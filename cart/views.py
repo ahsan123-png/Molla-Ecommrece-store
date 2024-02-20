@@ -24,6 +24,7 @@ def cart(request):
                 'quantity': item.quantity,
                 'product_total': item.subtotal * item.quantity,
                 'total': item.subtotal,
+                'product_id': product.id,
                 'image': None 
             }
             if product.pictures.exists():
@@ -67,6 +68,7 @@ def wishlist(request):
         product = item.product
         product_info = {
             'wishlist_id': item.id,
+            'product_id': product.id,
             'name': product.product_name,
             'price': product.price,
             'availability': 'In stock' if product.inventory.stock_quantity > 0 else 'Out of stock',
@@ -132,3 +134,22 @@ def base(request):
     else:
         wishlist_count = 0
     return render(request, 'base.html', {'wishlist_count': wishlist_count})
+# ==== delete product from cart ====
+@csrf_exempt
+def removeFromCart(request, id):
+    if request.method == "DELETE":
+        cart_item = get_object_or_404(Cart, product_id=id)
+        cart_item.delete()
+        return JsonResponse({'message': 'Item removed from cart.'})
+    else:
+        return JsonResponse({'error': 'Method not allowed.'}, status=405)
+    
+# === remove product from wishlist =====
+@csrf_exempt
+def removeFromWishlist(request, id):
+    if request.method == "DELETE":
+        wishlist_item = get_object_or_404(Wishlist, product_id=id)
+        wishlist_item.delete()
+        return JsonResponse({'message': 'Product removed successfully from wishlist'}, status=200)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)

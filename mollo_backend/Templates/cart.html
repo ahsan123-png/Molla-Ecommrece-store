@@ -53,7 +53,9 @@
 												</div>
 											</td>
 											<td class="total-col total-{{ item.id }}">${{ item.total }}</td>
-											<td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+											<td class="remove-col">
+												<button class="btn-remove" onclick="removeFromCart('{{ item.product_id }}')"><i class="icon-close"></i></button>
+											</td>
 										</tr>
 										{% endfor %}
 									</tbody>
@@ -69,7 +71,7 @@
 			        						</div><!-- End .input-group -->
 			            				</form>
 			            			</div><!-- End .cart-discount -->
-			            			<a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
+			            			<a href="{% url "cart" %}" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
 		            			</div><!-- End .cart-bottom -->
 	                		</div><!-- End .col-lg-9 -->
 	                		<aside class="col-lg-3">
@@ -161,5 +163,18 @@
 			});
 			// Call the updateSubtotalAndTotal function initially
 			updateSubtotalAndTotal();
+			// delete product from cart
+			function removeFromCart(productId) {
+				fetch(`/remove_from_cart/${productId}/`, {
+					method: 'DELETE',
+					headers: {
+						'X-CSRFToken': '{{ csrf_token }}'
+					}
+				}).then(response => {
+					if (response.ok) {
+						window.location.reload(); // Reload the page after successful deletion
+					}
+				});
+			}
 		</script>
  {% endblock body %}

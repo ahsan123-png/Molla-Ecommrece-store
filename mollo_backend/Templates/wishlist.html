@@ -54,7 +54,9 @@
                         <td class="action-col">
                             <button class="btn btn-block btn-outline-primary-2 add-to-cart-btn" data-wishlist-id="{{ product_info.wishlist_id }}"><i class="icon-cart-plus"></i>Add to Cart</button>
                         </td>
-                        <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+                        <td class="remove-col">
+                            <button class="btn-remove" onclick="removeFromWishlist({{ product_info.product_id }})"><i class="icon-close"></i></button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -94,6 +96,21 @@
             });
         });
     });
+
+    // remove product from wishlist
+    function removeFromWishlist(productId) {
+        fetch(`/remove_from_wishlist/${productId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload(); // Reload the page after successful removal from wishlist
+            }
+        });
+    }
+    
 </script>
 
 {% endblock body %}
