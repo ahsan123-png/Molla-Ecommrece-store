@@ -1,12 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
 {% load static %}
-
-
-
-
-
-
         <main class="main">
         	<div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
         		<div class="container">
@@ -22,7 +16,6 @@
                     </ol>
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
-
             <div class="page-content">
             	<div class="cart">
 	                <div class="container">
@@ -64,7 +57,6 @@
 										</tr>
 										{% endfor %}
 									</tbody>
-									
 								</table><!-- End .table table-wishlist -->
 	                			<div class="cart-bottom">
 			            			<div class="cart-discount">
@@ -83,7 +75,6 @@
 	                		<aside class="col-lg-3">
 	                			<div class="summary summary-cart">
 	                				<h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
-
 	                				<table class="table table-summary">
 	                					<tbody>	
 	                						<tr class="summary-subtotal">
@@ -94,7 +85,6 @@
 	                							<td>Shipping:</td>
 	                							<td>&nbsp;</td>
 	                						</tr>
-
 	                						<tr class="summary-shipping-row">
 	                							<td>
 													<div class="custom-control custom-radio">
@@ -104,7 +94,6 @@
 	                							</td>
 	                							<td>${{ initial_subtotal }}</td>
 	                						</tr><!-- End .summary-shipping-row -->
-											
 	                						<tr class="summary-shipping-row">
 												<td>
 													<div class="custom-control custom-radio">
@@ -114,7 +103,6 @@
 	                							</td>
 	                							<td>$10.00</td>
 	                						</tr><!-- End .summary-shipping-row -->
-
 	                						<tr class="summary-shipping-row">
 	                							<td>
 													<div class="custom-control custom-radio">
@@ -124,7 +112,6 @@
 	                							</td>
 	                							<td>$20.00</td>
 	                						</tr><!-- End .summary-shipping-row -->
-											
 	                						<tr class="summary-shipping-estimate">
 												<td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
 	                							<td>&nbsp;</td>
@@ -135,12 +122,9 @@
 	                							<td>$0.00</td>
 	                						</tr><!-- End .summary-total -->
 	                					</tbody>
-										
 	                				</table><!-- End .table table-summary -->
-
 	                				<a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
 	                			</div><!-- End .summary -->
-
 		            			<a href="category.html" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
 	                		</aside><!-- End .col-lg-3 -->
 	                	</div><!-- End .row -->
@@ -159,7 +143,6 @@
 				row.querySelector('.total-col').textContent = '$' + total.toFixed(2);
 				updateSubtotalAndTotal();
 			}
-		
 			// Function to update subtotal and total prices
 			function updateSubtotalAndTotal() {
 				var initialSubtotal = parseFloat("{{ initial_subtotal }}");
@@ -170,22 +153,13 @@
 				document.querySelector('.summary-subtotal td:last-child').textContent = '$' + subtotal.toFixed(2);
 				document.querySelector('.summary-total td:last-child').textContent = '$' + subtotal.toFixed(2);
 			}
-		
 			// Attach event listeners to quantity inputs
 			document.querySelectorAll('.cart-product-quantity input').forEach(function(input) {
 				input.addEventListener('change', function() {
 					updateProductTotal(this);
 				});
 			});
-		
 			// Call the updateSubtotalAndTotal function initially
 			updateSubtotalAndTotal();
 		</script>
-		
-		
-		
-		
-		
-		
-		
  {% endblock body %}
