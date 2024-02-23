@@ -83,19 +83,7 @@
 		                			<div class="summary">
 		                				<h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
 		                				<table class="table table-summary">
-		                					<thead>
-		                						<tr>
-		                							<th>Product</th>
-		                							<th>Total</th>
-		                						</tr>
-		                					</thead>
 		                					<tbody>
-												{% for item in cart_data %}
-													<tr>
-														<td><a href="#">{{ item.product_name }}</a></td>
-														<td>${{ item.price }}</td>
-													</tr>
-												{% endfor %}
 													<tr class="summary-subtotal">
 														<td>Subtotal:</td>
 														<td>${{ initial_subtotal }}</td>
