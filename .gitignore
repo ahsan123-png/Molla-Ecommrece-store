@@ -225,3 +225,4 @@ db.sqlite3
 *.pyc
 *.pyc
 admin_dashboard/__pycache__/views.cpython-311.pyc
+*.pyc
