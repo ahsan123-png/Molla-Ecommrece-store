@@ -1,78 +1,116 @@
 {% extends "base.html" %}
 {% block body %}
 {% load static %}
-        <main class="main">
-        	<div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
-        		<div class="container">
-        			<h1 class="page-title">Wishlist<span>Shop</span></h1>
-        		</div><!-- End .container -->
-        	</div><!-- End .page-header -->
-            <nav aria-label="breadcrumb" class="breadcrumb-nav">
-                <div class="container">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
-                    </ol>
-                </div><!-- End .container -->
-            </nav><!-- End .breadcrumb-nav -->
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
+        <div class="container">
+            <h1 class="page-title">Wishlist<span>Shop</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
 
-            <div class="page-content">
-            	<div class="container">
-					<table class="table table-wishlist table-mobile">
-						<thead>
-							<tr>
-								<th>Product</th>
-								<th>Price</th>
-								<th>Stock Status</th>
-								<th></th>
-								<th></th>
-							</tr>
-						</thead>
+    <div class="page-content">
+        <div class="container">
+            <table class="table table-wishlist table-mobile">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Stock Status</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
 
-						<tbody>
-							{% for product_info in products_info %}
-							<tr>
-								<td class="product-col">
-									<div class="product">
-										<figure class="product-media">
-											{% if product_info.image %}
-											<a href="#">
-												<img src="{{ product_info.image }}" alt="Product image">
-											</a>
-											{% endif %}
-										</figure>
+                <tbody>
+                    {% for product_info in products_info %}
+                    <tr>
+                        <td class="product-col">
+                            <div class="product">
+                                <figure class="product-media">
+                                    {% if product_info.image %}
+                                    <a href="#">
+                                        <img src="{{ product_info.image }}" alt="Product image">
+                                    </a>
+                                    {% endif %}
+                                </figure>
 
-										<h3 class="product-title">
-											<a href="#">{{ product_info.name }}</a>
-										</h3><!-- End .product-title -->
-									</div><!-- End .product -->
-								</td>
-								<td class="price-col">${{ product_info.price }}</td>
-								<td class="stock-col"><span class="in-stock">{{ product_info.availability }}</span></td>
+                                <h3 class="product-title">
+                                    <a href="#">{{ product_info.name }}</a>
+                                </h3><!-- End .product-title -->
+                            </div><!-- End .product -->
+                        </td>
+                        <td class="price-col">${{ product_info.price }}</td>
+                        <td class="stock-col"><span class="in-stock">{{ product_info.availability }}</span></td>
 
-                                    <div class="dropdown-menu">
-                                        <td class="action-col">
-											<button class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to Cart</button>
-										</td>
-                                    </div>
-								</td>
-								<td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table><!-- End .table table-wishlist -->
-	            	<div class="wishlist-share">
-	            		<div class="social-icons social-icons-sm mb-2">
-	            			<label class="social-label">Share on:</label>
-	    					<a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
-	    					<a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
-	    					<a href="#" class="social-icon" title="Instagram" target="_blank"><i class="icon-instagram"></i></a>
-	    					<a href="#" class="social-icon" title="Youtube" target="_blank"><i class="icon-youtube"></i></a>
-	    					<a href="#" class="social-icon" title="Pinterest" target="_blank"><i class="icon-pinterest"></i></a>
-	    				</div><!-- End .soial-icons -->
-	            	</div><!-- End .wishlist-share -->
-            	</div><!-- End .container -->
-            </div><!-- End .page-content -->
-        </main><!-- End .main -->
- {% endblock body %}
+                        <td class="action-col">
+                            <button class="btn btn-block btn-outline-primary-2 add-to-cart-btn" data-wishlist-id="{{ product_info.wishlist_id }}"><i class="icon-cart-plus"></i>Add to Cart</button>
+                        </td>
+                        <td class="remove-col">
+                            <button class="btn-remove" onclick="removeFromWishlist({{ product_info.product_id }})"><i class="icon-close"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table><!-- End .table table-wishlist -->
+            <div class="wishlist-share">
+                <div class="social-icons social-icons-sm mb-2">
+                    <label class="social-label">Share on:</label>
+                    <a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
+                    <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
+                    <a href="#" class="social-icon" title="Instagram" target="_blank"><i class="icon-instagram"></i></a>
+                    <a href="#" class="social-icon" title="Youtube" target="_blank"><i class="icon-youtube"></i></a>
+                    <a href="#" class="social-icon" title="Pinterest" target="_blank"><i class="icon-pinterest"></i></a>
+                </div><!-- End .soial-icons -->
+            </div><!-- End .wishlist-share -->
+        </div><!-- End .container -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+{% comment %} // this is the j query and ajax java to add product to add to cart by hitting button  {% endcomment %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.add-to-cart-btn').click(function() {
+            var wishlistId = $(this).data('wishlist-id');
+
+            $.ajax({
+                url: '/add_to_cart/' + wishlistId,
+                method: 'POST',
+                data: {}, // You can include additional data here if needed
+                success: function(response) {
+                    // Redirect to the cart page
+                    window.location.href = '{% url "cart" %}';
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error adding product to cart:', error);
+                    // Optionally, you can display an error message or handle the error
+                }
+            });
+        });
+    });
+
+    // remove product from wishlist
+    function removeFromWishlist(productId) {
+        fetch(`/remove_from_wishlist/${productId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload(); // Reload the page after successful removal from wishlist
+            }
+        });
+    }
+    
+</script>
+
+{% endblock body %}

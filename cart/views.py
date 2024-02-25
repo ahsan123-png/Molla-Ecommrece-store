@@ -1,12 +1,38 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 # Create your views here.
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-
+from django.http import HttpResponse, JsonResponse
+from product.models import Product
 from users.models import UserEx
-from .models import Wishlist
+from .models import Cart, Wishlist
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import get_user_model
+# ==========================================
+def cart(request):
+    if request.method == "GET":
+        cart_data = []
+        user = request.user
+        initial_subtotal = 0 
+        if isinstance(user, UserEx):
+            cart_items = Cart.objects.filter(user=user)
+        else:
+            cart_items = Cart.objects.filter(user=user)
+        for item in cart_items:
+            product = item.product
+            cart_item_data = {
+                'product_name': product.product_name,
+                'price': product.price,
+                'quantity': item.quantity,
+                'product_total': item.subtotal * item.quantity,
+                'total': item.subtotal,
+                'product_id': product.id,
+                'image': None 
+            }
+            if product.pictures.exists():
+                cart_item_data['image'] = product.pictures.first().picture.url
+            cart_data.append(cart_item_data)
+            initial_subtotal += item.subtotal
+    return render(request, 'cart.html', {'cart_data': cart_data,"initial_subtotal" :initial_subtotal })
+# ==== add items to wishlist page =====
 @csrf_exempt
 def addToWishlist(request):
     if request.method == 'POST':
@@ -33,11 +59,7 @@ def addToWishlist(request):
         return JsonResponse({'message': 'Product added to wishlist successfully'}, status=201)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
-
-def cart(request):
-    return render(request,"cart.html")
-
-
+# ===== Get data from wishlist ======
 def wishlist(request):
     # Get the user's wishlist items
     wishlist_items = Wishlist.objects.filter(user=request.user)
@@ -45,6 +67,8 @@ def wishlist(request):
     for item in wishlist_items:
         product = item.product
         product_info = {
+            'wishlist_id': item.id,
+            'product_id': product.id,
             'name': product.product_name,
             'price': product.price,
             'availability': 'In stock' if product.inventory.stock_quantity > 0 else 'Out of stock',
@@ -54,8 +78,55 @@ def wishlist(request):
             product_info['image'] = product.pictures.first().picture.url
         products_info.append(product_info)
     return render(request, 'wishlist.html', {'products_info': products_info})
+#==== add wishlist item to cart ======
+@csrf_exempt
+def addCart(request, id):
+    if request.method == "POST":
+        wishlist_item = Wishlist.objects.get(id=id)
+        cart_item, created = Cart.objects.get_or_create(
+            user=wishlist_item.user,
+            product=wishlist_item.product,
+            defaults={
+                'quantity': wishlist_item.quantity,
+                'subtotal': wishlist_item.quantity * wishlist_item.product.price
+            }
+        )
+        if not created:
+            cart_item.quantity += wishlist_item.quantity
+            cart_item.subtotal += wishlist_item.quantity * wishlist_item.product.price
+            cart_item.save()
+        wishlist_item.delete()
+        return redirect('cart')
+# == add a product into cart ===
+@csrf_exempt
+def addProductToCart(request, id):
+    if request.method == "GET":
+        try:
+            product_item = Product.objects.get(id=id)
+            user = request.user
+            if isinstance(user, UserEx):
+                user_ex = user
+            else:
+                user_ex =UserEx.objects.get(id=user.id)
+            cart_item, created = Cart.objects.get_or_create(
+                user=user_ex,
+                product=product_item,
+                defaults={
+                    'quantity': 1,
+                    'subtotal': product_item.price 
+                }
+            )
+            if not created:
+                cart_item.quantity += 1 
+                cart_item.subtotal += product_item.price
+                cart_item.save()
+            return redirect('cart')
+        except Product.DoesNotExist:
+            return HttpResponse("Product not found", status=404)
+    else:
+        return HttpResponse("Method not allowed", status=405)
 
-#wish list count on na
+#== wish list count on nav bar of base.html ===
 def base(request):
     if request.user.is_authenticated:
         # Get the wishlist count for the logged-in user
@@ -63,3 +134,22 @@ def base(request):
     else:
         wishlist_count = 0
     return render(request, 'base.html', {'wishlist_count': wishlist_count})
+# ==== delete product from cart ====
+@csrf_exempt
+def removeFromCart(request, id):
+    if request.method == "DELETE":
+        cart_item = get_object_or_404(Cart, product_id=id)
+        cart_item.delete()
+        return JsonResponse({'message': 'Item removed from cart.'})
+    else:
+        return JsonResponse({'error': 'Method not allowed.'}, status=405)
+    
+# === remove product from wishlist =====
+@csrf_exempt
+def removeFromWishlist(request, id):
+    if request.method == "DELETE":
+        wishlist_item = get_object_or_404(Wishlist, product_id=id)
+        wishlist_item.delete()
+        return JsonResponse({'message': 'Product removed successfully from wishlist'}, status=200)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)

@@ -1,12 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
 {% load static %}
-
-
-
-
-
-
         <main class="main">
         	<div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
         		<div class="container">
@@ -22,7 +16,6 @@
                     </ol>
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
-
             <div class="page-content">
             	<div class="cart">
 	                <div class="container">
@@ -38,57 +31,35 @@
 											<th></th>
 										</tr>
 									</thead>
-
-									<tbody>
+									<tbody id="cart-items">
+										{% for item in cart_data %}
 										<tr>
 											<td class="product-col">
 												<div class="product">
 													<figure class="product-media">
 														<a href="#">
-															<img src="{% static 'assets/images/products/table/product-1.jpg' %}" alt="Product image">
+															<img src="{{ item.image }}" alt="Product image">
 														</a>
 													</figure>
-
 													<h3 class="product-title">
-														<a href="#">Beige knitted elastic runner shoes</a>
-													</h3><!-- End .product-title -->
-												</div><!-- End .product -->
+														<a href="#">{{ item.product_name }}</a>
+													</h3>
+												</div>
 											</td>
-											<td class="price-col">$84.00</td>
+											<td class="price-col">${{ item.price }}</td>
 											<td class="quantity-col">
-                                                <div class="cart-product-quantity">
-                                                    <input type="number" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
-                                                </div><!-- End .cart-product-quantity -->
-                                            </td>
-											<td class="total-col">$84.00</td>
-											<td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
-										</tr>
-										<tr>
-											<td class="product-col">
-												<div class="product">
-													<figure class="product-media">
-														<a href="#">
-															<img src="{% static 'assets/images/products/table/product-2.jpg' %}" alt="Product image">
-														</a>
-													</figure>
-
-													<h3 class="product-title">
-														<a href="#">Blue utility pinafore denim dress</a>
-													</h3><!-- End .product-title -->
-												</div><!-- End .product -->
+												<div class="cart-product-quantity">
+													<input type="number" class="form-control quantity-input" value="{{ item.quantity }}" min="1" max="10" step="1" data-decimals="0" required data-product-id="{{ item.id }}">
+												</div>
 											</td>
-											<td class="price-col">$76.00</td>
-											<td class="quantity-col">
-                                                <div class="cart-product-quantity">
-                                                    <input type="number" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
-                                                </div><!-- End .cart-product-quantity -->                                 
-                                            </td>
-											<td class="total-col">$76.00</td>
-											<td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+											<td class="total-col total-{{ item.id }}">${{ item.total }}</td>
+											<td class="remove-col">
+												<button class="btn-remove" onclick="removeFromCart('{{ item.product_id }}')"><i class="icon-close"></i></button>
+											</td>
 										</tr>
+										{% endfor %}
 									</tbody>
 								</table><!-- End .table table-wishlist -->
-
 	                			<div class="cart-bottom">
 			            			<div class="cart-discount">
 			            				<form action="#">
@@ -100,25 +71,22 @@
 			        						</div><!-- End .input-group -->
 			            				</form>
 			            			</div><!-- End .cart-discount -->
-
-			            			<a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
+			            			<a href="{% url "cart" %}" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
 		            			</div><!-- End .cart-bottom -->
 	                		</div><!-- End .col-lg-9 -->
 	                		<aside class="col-lg-3">
 	                			<div class="summary summary-cart">
 	                				<h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
-
 	                				<table class="table table-summary">
-	                					<tbody>
+	                					<tbody>	
 	                						<tr class="summary-subtotal">
-	                							<td>Subtotal:</td>
-	                							<td>$160.00</td>
-	                						</tr><!-- End .summary-subtotal -->
+												<td>Subtotal:</td>
+												<td>$0.00</td>
+											</tr>
 	                						<tr class="summary-shipping">
 	                							<td>Shipping:</td>
 	                							<td>&nbsp;</td>
 	                						</tr>
-
 	                						<tr class="summary-shipping-row">
 	                							<td>
 													<div class="custom-control custom-radio">
@@ -126,44 +94,39 @@
 														<label class="custom-control-label" for="free-shipping">Free Shipping</label>
 													</div><!-- End .custom-control -->
 	                							</td>
-	                							<td>$0.00</td>
+	                							<td>$0</td>
 	                						</tr><!-- End .summary-shipping-row -->
-
 	                						<tr class="summary-shipping-row">
-	                							<td>
-	                								<div class="custom-control custom-radio">
+												<td>
+													<div class="custom-control custom-radio">
 														<input type="radio" id="standart-shipping" name="shipping" class="custom-control-input">
 														<label class="custom-control-label" for="standart-shipping">Standart:</label>
 													</div><!-- End .custom-control -->
 	                							</td>
 	                							<td>$10.00</td>
 	                						</tr><!-- End .summary-shipping-row -->
-
 	                						<tr class="summary-shipping-row">
 	                							<td>
-	                								<div class="custom-control custom-radio">
+													<div class="custom-control custom-radio">
 														<input type="radio" id="express-shipping" name="shipping" class="custom-control-input">
 														<label class="custom-control-label" for="express-shipping">Express:</label>
 													</div><!-- End .custom-control -->
 	                							</td>
 	                							<td>$20.00</td>
 	                						</tr><!-- End .summary-shipping-row -->
-
 	                						<tr class="summary-shipping-estimate">
-	                							<td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
+												<td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
 	                							<td>&nbsp;</td>
 	                						</tr><!-- End .summary-shipping-estimate -->
-
+											
 	                						<tr class="summary-total">
-	                							<td>Total:</td>
-	                							<td>$160.00</td>
+												<td>Total:</td>
+	                							<td>$0.00</td>
 	                						</tr><!-- End .summary-total -->
 	                					</tbody>
 	                				</table><!-- End .table table-summary -->
-
 	                				<a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
 	                			</div><!-- End .summary -->
-
 		            			<a href="category.html" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
 	                		</aside><!-- End .col-lg-3 -->
 	                	</div><!-- End .row -->
@@ -171,4 +134,47 @@
                 </div><!-- End .cart -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
+		{% comment %} add js to calcute live counts of quantity  {% endcomment %}
+		<script>
+			// Function to calculate and update product total
+			function updateProductTotal(input) {
+				var row = input.closest('tr'); // Get the parent row of the input
+				var price = parseFloat(row.querySelector('.price-col').textContent.replace('$', ''));
+				var quantity = parseInt(input.value);
+				var total = price * quantity;
+				row.querySelector('.total-col').textContent = '$' + total.toFixed(2);
+				updateSubtotalAndTotal();
+			}
+			// Function to update subtotal and total prices
+			function updateSubtotalAndTotal() {
+				var initialSubtotal = parseFloat("0");
+				var subtotal = initialSubtotal;
+				document.querySelectorAll('.total-col').forEach(function(element) {
+					subtotal += parseFloat(element.textContent.replace('$', ''));
+				});
+				document.querySelector('.summary-subtotal td:last-child').textContent = '$' + subtotal.toFixed(2);
+				document.querySelector('.summary-total td:last-child').textContent = '$' + subtotal.toFixed(2);
+			}
+			// Attach event listeners to quantity inputs
+			document.querySelectorAll('.cart-product-quantity input').forEach(function(input) {
+				input.addEventListener('change', function() {
+					updateProductTotal(this);
+				});
+			});
+			// Call the updateSubtotalAndTotal function initially
+			updateSubtotalAndTotal();
+			// delete product from cart
+			function removeFromCart(productId) {
+				fetch(`/remove_from_cart/${productId}/`, {
+					method: 'DELETE',
+					headers: {
+						'X-CSRFToken': '{{ csrf_token }}'
+					}
+				}).then(response => {
+					if (response.ok) {
+						window.location.reload(); // Reload the page after successful deletion
+					}
+				});
+			}
+		</script>
  {% endblock body %}
