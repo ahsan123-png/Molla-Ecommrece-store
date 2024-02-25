@@ -125,9 +125,9 @@
 	                						</tr><!-- End .summary-total -->
 	                					</tbody>
 	                				</table><!-- End .table table-summary -->
-	                				<a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
+	                				<a href="#" class="btn btn-outline-primary-2 btn-order btn-block" onclick="proceedToCheckout()">PROCEED TO CHECKOUT</a>
 	                			</div><!-- End .summary -->
-		            			<a href="category.html" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+		            			<a href={% url "lists" %} class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
 	                		</aside><!-- End .col-lg-3 -->
 	                	</div><!-- End .row -->
 	                </div><!-- End .container -->
@@ -176,5 +176,29 @@
 					}
 				});
 			}
+
+
+		// Function to handle "Proceed to Checkout" button click event
+		function proceedToCheckout() {
+			var cartData = [];
+			var initialSubtotal = parseFloat(document.querySelector('.summary-subtotal td:last-child').textContent.replace('$', ''));
+			// Collect product name and total from each row in the cart
+			document.querySelectorAll('.cart-items tr').forEach(function(row) {
+				console.log("Processing row:", row);
+				var productName = row.querySelector('.product-title').textContent;
+				console.log("Product Name:", productName);
+				var total = parseFloat(row.querySelector('.price-col').textContent.replace('$', ''));
+				console.log("Total:", total);
+		
+				cartData.push({
+					'product_name': productName,
+					'total': total
+				});
+			});
+			console.log("Cart Data:", cartData); // Debugging
+			var encodedCartData = encodeURIComponent(JSON.stringify(cartData));
+			var checkoutUrl = "{% url 'checkout' %}?cart_data=" + encodedCartData + "&initial_subtotal=" + initialSubtotal;
+			window.location.href = checkoutUrl;
+		}
 		</script>
  {% endblock body %}
