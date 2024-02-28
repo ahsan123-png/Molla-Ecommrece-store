@@ -18,7 +18,7 @@ def checkout(request):
         for cart_item in cart_items:
             order = Order.objects.create(
                 customer=user_ex,
-                product=cart_item.product,
+                ordered_product=cart_item.product,
                 subtotal=cart_item.subtotal,
                 color=cart_item.selected_color,
                 size=cart_item.selected_size,
