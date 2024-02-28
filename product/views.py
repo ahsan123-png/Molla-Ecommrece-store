@@ -41,24 +41,21 @@ def addProduct(request):
         for picture in product_pictures:
             product_picture = ProductPicture.objects.create(product=product, picture=picture)
             product_picture.save()
+
         # Process product variants and add them to the database
         colors = request.POST.getlist('color[]')
-        sizes = request.POST.getlist('size[]')
-        stocks = request.POST.getlist('stock[]')
+        sizes_list = request.POST.getlist('size[]')
+        stocks_list = request.POST.getlist('stock[]')
+
+        # Convert sizes and stocks to nested lists for easier iteration
+        sizes_nested = [sizes_list[i:i+len(colors)] for i in range(0, len(sizes_list), len(colors))]
+        stocks_nested = [stocks_list[i:i+len(colors)] for i in range(0, len(stocks_list), len(colors))]
         
-        for color in colors:
+        for color, sizes, stocks in zip(colors, sizes_nested, stocks_nested):
             for size, stock in zip(sizes, stocks):
+                # Create ProductVariant instances for each size and stock combination
                 product_variant = ProductVariant.objects.create(product=product, color=color, size=size, stock=stock)
                 product_variant.save()
-        # Calculate total stock quantity for inventory
-        total_stock_quantity = sum(int(stock) for stock in stocks)
-        
-        # Update or create inventory entry
-        inventory, created = Inventory.objects.get_or_create(product=product, defaults={'stock_quantity': total_stock_quantity})
-        if not created:
-            inventory.stock_quantity = total_stock_quantity
-            inventory.save()
-
         return redirect('add')
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
