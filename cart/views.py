@@ -100,24 +100,32 @@ def addCart(request, id):
 # == add a product into cart ===
 @csrf_exempt
 def addProductToCart(request, id):
-    if request.method == "GET":
+    if request.method == "POST":
         try:
             product_item = Product.objects.get(id=id)
             user = request.user
             if isinstance(user, UserEx):
                 user_ex = user
             else:
-                user_ex =UserEx.objects.get(id=user.id)
+                user_ex = UserEx.objects.get(id=user.id)
+
+            # Get selected color and size from the request's query string
+            selected_color = request.POST.get('color_select')
+            selected_size = request.POST.get('size')
+            print(selected_color , selected_size)
+
             cart_item, created = Cart.objects.get_or_create(
                 user=user_ex,
                 product=product_item,
                 defaults={
                     'quantity': 1,
-                    'subtotal': product_item.price 
+                    'subtotal': product_item.price,
+                    'selected_color': selected_color,
+                    'selected_size': selected_size
                 }
             )
             if not created:
-                cart_item.quantity += 1 
+                cart_item.quantity += 1
                 cart_item.subtotal += product_item.price
                 cart_item.save()
             return redirect('cart')
@@ -125,6 +133,7 @@ def addProductToCart(request, id):
             return HttpResponse("Product not found", status=404)
     else:
         return HttpResponse("Method not allowed", status=405)
+
 
 #== wish list count on nav bar of base.html ===
 def base(request):

@@ -25,7 +25,6 @@ def addProduct(request):
         subcategory = request.POST.get('subcategory')
         product_type = request.POST.get('product_type')
         product_pictures = request.FILES.getlist('pictures')  # Get list of uploaded images
-        
         # Create the product
         product = Product.objects.create(
             product_name=product_name,
@@ -36,33 +35,35 @@ def addProduct(request):
             subcategory=subcategory,
             productType=product_type,
         )
-        
         # Create ProductPicture instances for each uploaded image
         for picture in product_pictures:
             product_picture = ProductPicture.objects.create(product=product, picture=picture)
             product_picture.save()
         # Process product variants and add them to the database
         colors = request.POST.getlist('color[]')
-        sizes = request.POST.getlist('size[]')
-        stocks = request.POST.getlist('stock[]')
-        
-        for color in colors:
+        sizes_list = request.POST.getlist('size[]')
+        stocks_list = request.POST.getlist('stock[]')
+        # Convert sizes and stocks to nested lists for easier iteration
+        sizes_nested = [sizes_list[i:i+len(colors)] for i in range(0, len(sizes_list), len(colors))]
+        stocks_nested = [stocks_list[i:i+len(colors)] for i in range(0, len(stocks_list), len(colors))]
+        for color, sizes, stocks in zip(colors, sizes_nested, stocks_nested):
             for size, stock in zip(sizes, stocks):
+                # Create ProductVariant instances for each size and stock combination
                 product_variant = ProductVariant.objects.create(product=product, color=color, size=size, stock=stock)
                 product_variant.save()
         # Calculate total stock quantity for inventory
-        total_stock_quantity = sum(int(stock) for stock in stocks)
-        
+        total_stock_quantity = sum(int(stock) for stock in stocks_list)
         # Update or create inventory entry
-        inventory, created = Inventory.objects.get_or_create(product=product, defaults={'stock_quantity': total_stock_quantity})
+        inventory, created = Inventory.objects.get_or_create(product=product)
         if not created:
-            inventory.stock_quantity = total_stock_quantity
-            inventory.save()
+            inventory.stock_quantity += total_stock_quantity  # Increment existing stock quantity
+        else:
+            inventory.stock_quantity = total_stock_quantity  # Set initial stock quantity if it's a new entry
+        inventory.save()
 
         return redirect('add')
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
-
 # =========== get all blogs ==============
 def products(request):
     try:
