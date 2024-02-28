@@ -26,10 +26,18 @@ def register(request):
         user.set_password(password)
         user.set_customer_id()
         user.save()
-        return redirect("home")
+        # Authenticate the user
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            # Log the user in
+            login(request, user)
+            return redirect("home")
+        else:
+            return JsonResponse({"error": "Unable to log in the user"}, status=500)
     else:
         # Handle unsupported HTTP methods
         return JsonResponse({"error": f"Method {request.method} is not supported"}, status=405)
+
 
 #==== Signin user ====
 @csrf_exempt
