@@ -134,59 +134,61 @@
 							<label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
 						</form>
 					</div><!-- End .checkout-discount -->
-					<form action="#">
+					<form action="{% url "shipment_address" %}">
+						{% csrf_token %}
+						<input type="hidden" name="order_id" value="{{ order.id }}">
 						<div class="row">
 							<div class="col-lg-9">
 								<h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
 									<div class="row">
 										<div class="col-sm-6">
 											<label>First Name *</label>
-											<input type="text" class="form-control" required>
+											<input type="text" name="first_name" class="form-control" required>
 										</div><!-- End .col-sm-6 -->
 										<div class="col-sm-6">
 											<label>Last Name *</label>
-											<input type="text" class="form-control" required>
+											<input type="text" name="last_name" class="form-control" required>
 										</div><!-- End .col-sm-6 -->
 									</div><!-- End .row -->
 									<label>Company Name (Optional)</label>
-									<input type="text" class="form-control">
+									<input type="text" name="company_name" class="form-control">
 									<label>Country *</label>
-									<input type="text" class="form-control" required>
+									<input type="text" name="country" class="form-control" required>
 									<label>Street address *</label>
-									<input type="text" class="form-control" placeholder="House number and Street name" required>
-									<input type="text" class="form-control" placeholder="Appartments, suite, unit etc ..." required>
+									<input type="text" name="street_address_one" class="form-control" placeholder="House number and Street name" required>
+									<input type="text" name="street_address_two" class="form-control" placeholder="Appartments, suite, unit etc ..." required>
 									<div class="row">
 										<div class="col-sm-6">
 											<label>Town / City *</label>
-											<input type="text" class="form-control" required>
+											<input type="text" name="city" class="form-control" required>
 										</div><!-- End .col-sm-6 -->
 										<div class="col-sm-6">
-											<label>State / County *</label>
-											<input type="text" class="form-control" required>
+											<label>State *</label>
+											<input type="text" name="state" class="form-control" required>
 										</div><!-- End .col-sm-6 -->
 									</div><!-- End .row -->
 									<div class="row">
 										<div class="col-sm-6">
 											<label>Postcode / ZIP *</label>
-											<input type="text" class="form-control" required>
+											<input type="text" name="postal_code" class="form-control" required>
 										</div><!-- End .col-sm-6 -->
 										<div class="col-sm-6">
 											<label>Phone *</label>
-											<input type="tel" class="form-control" required>
+											<input type="tel" name="phone_number" class="form-control" required>
 										</div><!-- End .col-sm-6 -->
 									</div><!-- End .row -->
 									<label>Email address *</label>
-									<input type="email" class="form-control" required>
-									<div class="custom-control custom-checkbox">
+									<input type="email" name="email" class="form-control" required>
+									<!-- <div class="custom-control custom-checkbox">
 										<input type="checkbox" class="custom-control-input" id="checkout-create-acc">
 										<label class="custom-control-label" for="checkout-create-acc">Create an account?</label>
-									</div><!-- End .custom-checkbox -->
+									</div>
 									<div class="custom-control custom-checkbox">
 										<input type="checkbox" class="custom-control-input" id="checkout-diff-address">
 										<label class="custom-control-label" for="checkout-diff-address">Ship to a different address?</label>
-									</div><!-- End .custom-checkbox -->
+									</div>End .custom-checkbox -->
 									<label>Order notes (optional)</label>
-									<textarea class="form-control" cols="30" rows="4" placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
+									<textarea class="form-control" name="additional_note" cols="30" rows="4" placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
 							</div><!-- End .col-lg-9 -->
 							<aside class="col-lg-3">
 								<div class="summary">
@@ -275,6 +277,7 @@
 			</div><!-- End .checkout -->
 		</div><!-- End .page-content -->
 	</main><!-- End .main -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
 		// JavaScript to open the payment popup when "Credit Card (Stripe)" link is clicked
 		document.getElementById('card-payment-link').addEventListener('click', function(event) {
@@ -285,6 +288,34 @@
 		// JavaScript to close the payment popup when the close button is clicked
 		document.querySelector('.close-btn').addEventListener('click', function() {
 			document.getElementById('payment-popup').style.display = 'none'; // Hide the payment popup
+		});
+
+		$(document).ready(function() {
+			// Intercept form submission
+			$('form').submit(function(event) {
+				// Prevent the default form submission
+				event.preventDefault();
+	
+				// Serialize form data
+				var formData = $(this).serialize();
+	
+				// Perform an AJAX POST request to the form's action URL
+				$.ajax({
+					type: 'POST',
+					url: $(this).attr('action'),
+					data: formData,
+					success: function(response) {
+						// Handle the response here, such as displaying a success message
+						alert('Order placed successfully!');
+						// Redirect to another page if needed
+						window.location.href = '/thank_you_page';
+					},
+					error: function(xhr, errmsg, err) {
+						// Handle any errors here, such as displaying an error message
+						alert('Error: ' + errmsg);
+					}
+				});
+			});
 		});
 	</script>
 {% endblock body %}
