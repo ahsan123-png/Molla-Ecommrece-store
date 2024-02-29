@@ -134,8 +134,8 @@
 							<label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
 						</form>
 					</div><!-- End .checkout-discount -->
-					<form action="{% url "shipment_address" %}">
-						{% csrf_token %}
+					<form action="{% url "shipment_address" %}" method="POST">
+					{% csrf_token %}
 						<input type="hidden" name="order_id" value="{{ order.id }}">
 						<div class="row">
 							<div class="col-lg-9">
@@ -265,13 +265,13 @@
 											</div>
 										</div>
 									</div><!-- Ed .accordion -->
-									<button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
-										<span class="btn-text">Place Order</span>
-										<span class="btn-hover-text">Proceed to Checkout</span>
-									</button>
 								</div><!-- End .summary -->
 							</aside><!-- End .col-lg-3 -->
 						</div><!-- End .row -->
+						<button id="place-order-btn" type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+							<span class="btn-text">Place Order</span>
+							<span class="btn-hover-text">Proceed to Checkout</span>
+						</button>
 					</form>
 				</div><!-- End .container -->
 			</div><!-- End .checkout -->
@@ -291,18 +291,30 @@
 		});
 
 		$(document).ready(function() {
-			// Intercept form submission
-			$('form').submit(function(event) {
-				// Prevent the default form submission
+			// Attach event listener to the button click event
+			$('#place-order-btn').click(function(event) {
+				// Prevent the default button click behavior
 				event.preventDefault();
-	
+				
+				// Find the form associated with the button
+				var form = $(this).closest('form');
+				
 				// Serialize form data
-				var formData = $(this).serialize();
-	
+				var formData = form.serialize();
+				
+				// Get the CSRF token value from the form
+				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+				
+				// Include the CSRF token in the request headers
+				var headers = {
+					'X-CSRFToken': csrfToken
+				};
+		
 				// Perform an AJAX POST request to the form's action URL
 				$.ajax({
 					type: 'POST',
-					url: $(this).attr('action'),
+					url: form.attr('http://127.0.0.1:8000/order/checkout/shipment_address'),
+					headers: headers,
 					data: formData,
 					success: function(response) {
 						// Handle the response here, such as displaying a success message
@@ -317,5 +329,8 @@
 				});
 			});
 		});
+		
+		
+		
 	</script>
 {% endblock body %}
