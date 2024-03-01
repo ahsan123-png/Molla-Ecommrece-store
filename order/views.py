@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 import ast
 from django.views.decorators.csrf import csrf_exempt
@@ -27,9 +28,9 @@ def checkout(request):
                 quantity=cart_item.quantity,
             )
             order.save()
-        
         cart_items.delete()
-    return render(request, 'checkout.html', {'initial_subtotal': initial_subtotal})
+        last_order = Order.objects.filter(customer=user_ex).latest('order_date')
+    return render(request, 'checkout.html', {'initial_subtotal': initial_subtotal, 'order': last_order})
 
 @csrf_exempt
 def shipmentAddress(request):
@@ -37,9 +38,9 @@ def shipmentAddress(request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
-        street_address_one=request.POST.get('street_address_one')
-        street_address_two=request.POST.get('street_address_two')
-        street_address =street_address_one + street_address_two
+        street_address_one = request.POST.get('street_address_one')
+        street_address_two = request.POST.get('street_address_two')
+        street_address = street_address_one + street_address_two
         city = request.POST.get('city')
         state = request.POST.get('state')
         postal_code = request.POST.get('postal_code')
@@ -47,10 +48,18 @@ def shipmentAddress(request):
         phone_number = request.POST.get('phone_number')
         additional_note = request.POST.get('additional_note')
         order_id = request.POST.get('order_id')
-        order = Order.objects.get(id=order_id)
+        try:
+            order = Order.objects.get(id=order_id)
+        except Order.DoesNotExist:
+            return HttpResponse('Invalid order ID', status=400)
+        user = request.user
+        if isinstance(user, UserEx):
+            user_ex = user
+        else:
+            user_ex = UserEx.objects.get(id=user.id)
         shipment_address = ShipmentAddress.objects.create(
             order=order,
-            customer=request.user,
+            customer=user_ex,
             first_name=first_name,
             last_name=last_name,
             email=email,
@@ -64,4 +73,4 @@ def shipmentAddress(request):
         )
         shipment_address.save()
         return redirect('home')  # Redirect to the checkout page or any other page
-    return render(request,"checkout.html")
+    return render(request, "checkout.html")

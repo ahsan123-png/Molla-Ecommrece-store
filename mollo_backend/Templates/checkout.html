@@ -143,6 +143,8 @@
 									<div class="row">
 										<div class="col-sm-6">
 											<label>First Name *</label>
+											<p>Order ID: {{ order.id }}</p>
+
 											<input type="text" name="first_name" class="form-control" required>
 										</div><!-- End .col-sm-6 -->
 										<div class="col-sm-6">
@@ -256,22 +258,22 @@
 												<span class="close-btn">&times;</span>
 												<h2>Enter Card Details</h2>
 												<!-- Card Payment Form -->
-												<form action="/process_card_payment" method="POST">
+												{% comment %} <form action="#" method="POST">
 													<input type="text" name="card_number" placeholder="Card Number" required><br>
 													<input type="text" name="expiry_date" placeholder="Expiry Date  mm/yyyy" required><br>
 													<input type="text" name="cvv" placeholder="CVV" required><br>
 													<input class="form-btn" type="submit" value="Pay with Card">
-												</form>
+												</form> {% endcomment %}
 											</div>
 										</div>
 									</div><!-- Ed .accordion -->
+									<button id="#" type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+										<span class="btn-text">Place Order</span>
+										<span class="btn-hover-text">Proceed to Checkout</span>
+									</button>
 								</div><!-- End .summary -->
 							</aside><!-- End .col-lg-3 -->
 						</div><!-- End .row -->
-						<button id="place-order-btn" type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
-							<span class="btn-text">Place Order</span>
-							<span class="btn-hover-text">Proceed to Checkout</span>
-						</button>
 					</form>
 				</div><!-- End .container -->
 			</div><!-- End .checkout -->
@@ -313,7 +315,7 @@
 				// Perform an AJAX POST request to the form's action URL
 				$.ajax({
 					type: 'POST',
-					url: form.attr('http://127.0.0.1:8000/order/checkout/shipment_address'),
+					url: form.attr('action'),
 					headers: headers,
 					data: formData,
 					success: function(response) {
