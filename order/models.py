@@ -46,5 +46,6 @@ class ShipmentAddress(models.Model):
     phone_number = models.CharField(max_length=15)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
+    payment_method = models.CharField(max_length=30 , null=True,blank=True)
     email = models.EmailField()
     additional_note = models.TextField(blank=True)
