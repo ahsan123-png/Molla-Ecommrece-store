@@ -48,6 +48,7 @@ def shipmentAddress(request):
         phone_number = request.POST.get('phone_number')
         additional_note = request.POST.get('additional_note')
         order_id = request.POST.get('order_id')
+        paymentMethod=request.POST.get("payment_method")
         try:
             order = Order.objects.get(id=order_id)
         except Order.DoesNotExist:
@@ -69,7 +70,8 @@ def shipmentAddress(request):
             postal_code=postal_code,
             country=country,
             phone_number=phone_number,
-            additional_note=additional_note
+            additional_note=additional_note,
+            payment_method=paymentMethod
         )
         shipment_address.save()
         return redirect('home')  # Redirect to the checkout page or any other page

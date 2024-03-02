@@ -211,11 +211,11 @@
 									</table><!-- End .table table-summary -->
 									<div class="accordion-summary" id="accordion-payment">
 										<div class="card">
-											<div class="card-header" id="heading-3">
+											<div class="card-header" id="heading-3" style="width: 60%;">
 												<h2 class="card-title">
-													<a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
-														Cash on delivery
-													</a>
+													<input class="collapsed" type="radio" name="payment_method" value="cash_on_delvery" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3" style="width: 20px;">
+															Cash on delivery
+													</input>
 												</h2>
 											</div><!-- End .card-header -->
 											<div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
@@ -224,11 +224,11 @@
 											</div><!-- End .collapse -->
 										</div><!-- End .card -->
 										<div class="card">
-											<div class="card-header" id="heading-4">
+											<div class="card-header" id="heading-4" style="width: 34.5%;">
 												<h2 class="card-title">
-													<a class="collapsed" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
-														PayPal <small class="float-right paypal-link">What is PayPal?</small>
-													</a>
+													<input class="collapsed" type="radio" name="payment_method" value="payPal" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4"  style="width: 20px;">
+														PayPal 
+													</input>
 												</h2>
 											</div><!-- End .card-header -->
 											<div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
@@ -238,12 +238,12 @@
 											</div><!-- End .collapse -->
 										</div><!-- End .card -->
 										<div class="card">
-											<div class="card-header" id="heading-5">
+											<div class="card-header" id="heading-5" style="width: 34.5%;">
 												<h2 class="card-title">
-													<a class="collapsed" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5" id="card-payment-link">
-														Credit Card (Stripe)
-														<img src="{% static 'assets/images/payments-summary.png' %}" alt="payments cards">
-													</a>
+													<input class="collapsed" type="radio" name="payment_method" value="payPal" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5" id="card-payment-link"  style="width: 20px;">
+														Cards
+														<!--<img src="{% static 'assets/images/payments-summary.png' %}" alt="payments cards"> -->
+													</input>
 												</h2>
 											</div><!-- End .card-header -->
 											<div id="collapse-5" class="collapse" aria-labelledby="heading-5" data-parent="#accordion-payment">
@@ -251,19 +251,6 @@
 												</div><!-- End .card-body -->
 											</div><!-- End .collapse -->
 										</div><!-- End .card -->
-										<div class="popup" id="payment-popup">
-											<div class="popup-content">
-												<span class="close-btn">&times;</span>
-												<h2>Enter Card Details</h2>
-												<!-- Card Payment Form -->
-												{% comment %} <form action="#" method="POST">
-													<input type="text" name="card_number" placeholder="Card Number" required><br>
-													<input type="text" name="expiry_date" placeholder="Expiry Date  mm/yyyy" required><br>
-													<input type="text" name="cvv" placeholder="CVV" required><br>
-													<input class="form-btn" type="submit" value="Pay with Card">
-												</form> {% endcomment %}
-											</div>
-										</div>
 									</div><!-- Ed .accordion -->
 									<button id="#" type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
 										<span class="btn-text">Place Order</span>
@@ -273,6 +260,19 @@
 							</aside><!-- End .col-lg-3 -->
 						</div><!-- End .row -->
 					</form>
+					<div class="popup" id="payment-popup">
+						<div class="popup-content">
+							<span class="close-btn">&times;</span>
+							<h2>Enter Card Details</h2>
+							<!-- Card Payment Form -->
+							<form action="#" method="POST">
+								<input type="text" name="card_number" placeholder="Card Number" required><br>
+								<input type="text" name="expiry_date" placeholder="Expiry Date  mm/yyyy" required><br>
+								<input type="text" name="cvv" placeholder="CVV" required><br>
+								<input class="form-btn" type="submit" value="Pay with Card">
+							</form> 
+						</div>
+					</div>
 				</div><!-- End .container -->
 			</div><!-- End .checkout -->
 		</div><!-- End .page-content -->
