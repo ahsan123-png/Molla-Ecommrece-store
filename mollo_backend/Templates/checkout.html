@@ -240,7 +240,7 @@
 										<div class="card">
 											<div class="card-header" id="heading-5" style="width: 34.5%;">
 												<h2 class="card-title">
-													<input class="collapsed" type="radio" name="payment_method" value="payPal" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5" id="card-payment-link"  style="width: 20px;">
+													<input class="collapsed" type="radio" name="payment_method" value="card" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5" id="card-payment-link"  style="width: 20px;">
 														Cards
 														<!--<img src="{% static 'assets/images/payments-summary.png' %}" alt="payments cards"> -->
 													</input>
@@ -265,7 +265,9 @@
 							<span class="close-btn">&times;</span>
 							<h2>Enter Card Details</h2>
 							<!-- Card Payment Form -->
-							<form action="#" method="POST">
+							<form action="{% url "card_pay" %}" method="POST">
+								{% csrf_token %}
+								<input type="hidden" name="initial_subtotal" value="{{ initial_subtotal }}">
 								<input type="text" name="card_number" placeholder="Card Number" required><br>
 								<input type="text" name="expiry_date" placeholder="Expiry Date  mm/yyyy" required><br>
 								<input type="text" name="cvv" placeholder="CVV" required><br>
@@ -284,12 +286,10 @@
 			event.preventDefault(); // Prevent the default behavior of the link
 			document.getElementById('payment-popup').style.display = 'block'; // Display the payment popup
 		});
-
 		// JavaScript to close the payment popup when the close button is clicked
 		document.querySelector('.close-btn').addEventListener('click', function() {
 			document.getElementById('payment-popup').style.display = 'none'; // Hide the payment popup
 		});
-
 		$(document).ready(function() {
 			// Attach event listener to the button click event
 			$('#place-order-btn').click(function(event) {
