@@ -26,6 +26,7 @@ def checkout(request):
                 color=cart_item.selected_color,
                 size=cart_item.selected_size,
                 quantity=cart_item.quantity,
+                whole_total=initial_subtotal
             )
             order.save()
         cart_items.delete()
