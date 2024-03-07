@@ -65,10 +65,6 @@ def shipmentAddress(request):
         additional_note = request.POST.get('additional_note')
         order_id = request.POST.get('order_id')
         paymentMethod=request.POST.get("payment_method")
-        try:
-            order = Order.objects.get(id=order_id)
-        except Order.DoesNotExist:
-            return HttpResponse('Invalid order ID', status=400)
         user = request.user
         if isinstance(user, UserEx):
             user_ex = user
@@ -92,3 +88,16 @@ def shipmentAddress(request):
         shipment_address.save()
         return redirect('home')  # Redirect to the checkout page or any other page
     return render(request, "checkout.html")
+"""shipment_address.orders.set(orders) is a Django ORM method used to set the related orders for a ShipmentAddress instance. It takes an iterable of Order instances (in this case, the variable orders) and associates them with the ShipmentAddress.
+
+In other words, when you call set(orders), it replaces any existing set of orders for that ShipmentAddress with the new set provided. This is useful when you want to update the associated orders for a ShipmentAddress.
+It creates a new ShipmentAddress instance and associates it with the orders specified in the orders variable. This ensures that this shipment address is linked to those specific orders.
+
+After this operation, if you access shipment_address.orders.all(), you'll get the set of orders associated with that ShipmentAddress.
+
+
+this is the Query to get the all order of a user from shipment address
+
+shipment_address = ShipmentAddress.objects.get(id=your_shipment_address_id)
+orders = shipment_address.orders.all()
+"""
