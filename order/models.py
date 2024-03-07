@@ -37,7 +37,7 @@ class Shipment(models.Model):
         return f"Shipment #{self.id} - Tracking: {self.tracking_number}, Status: {self.delivery_status}"
 
 class ShipmentAddress(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    orders = models.ManyToManyField(Order)
     customer = models.ForeignKey(UserEx, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=200)
     city = models.CharField(max_length=50)
