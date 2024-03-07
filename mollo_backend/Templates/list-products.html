@@ -137,15 +137,15 @@
                                             <img src="{{ product.product_pictures.first.picture.url }}" alt="Product image" class="product-image">
                                         </a>
                                         {% endif %}
-                                        <div class="product-action-vertical">
+                                        <!--<div class="product-action-vertical">
                                             <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                        </div><!-- End .product-action -->
+                                        </div>
                                         <div class="product-action action-icon-top">
                                             <a href="{% url 'add_product_to_cart' product.id %}" class="btn-product btn-cart"><span>add to cart</span></a>
                                             <a href="popup/quickView.html" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a>
                                             <a href="#" class="btn-product btn-compare" title="Compare"><span>compare</span></a>
-                                        </div><!-- End .product-action -->
-                                    </figure><!-- End .product-media -->
+                                        </div> -->
+                                    </figure>
                                     <div class="product-body">
                                         <div class="product-cat">
                                             <a href="#">{{ product.productType }} | {{ product.category }} | {{ product.subcategory }}</a>
