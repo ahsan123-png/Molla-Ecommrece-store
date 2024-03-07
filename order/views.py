@@ -1,38 +1,53 @@
-from django.http import HttpResponse
-from django.shortcuts import redirect, render
+import json
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 import ast
 from django.views.decorators.csrf import csrf_exempt
 from cart.models import Cart
 from order.models import Order, ShipmentAddress
+from product.models import Product
 from users.models import UserEx
 from django.contrib.auth.decorators import login_required
 #=================== views here ===================
 @login_required
 def checkout(request):
-    initial_subtotal = None  # Default value
     if request.method == "GET":
-        initial_subtotal = request.GET.get('initial_subtotal', None)
+        color = []
+        size = []
+        product_ids = []
+        cart_data = json.loads(request.GET.get('cart_data', '[]'))
+        initial_subtotal = float(request.GET.get('initial_subtotal', 0))
         user = request.user
         if isinstance(user, UserEx):
             user_ex = user
         else:
             user_ex = UserEx.objects.get(id=user.id)
         cart_items = Cart.objects.filter(user=user_ex)
-        for cart_item in cart_items:
+        for i in cart_items:
+            product_ids.append(i.product.id)
+            color.append(i.selected_color)
+            size.append(i.selected_size)
+        for item,product_id, c, s in zip(cart_data,product_ids ,color, size):
+            product = get_object_or_404(Product, id=product_id)
             order = Order.objects.create(
                 customer=user_ex,
-                ordered_product=cart_item.product,
-                subtotal=cart_item.subtotal,
-                color=cart_item.selected_color,
-                size=cart_item.selected_size,
-                quantity=cart_item.quantity,
-                whole_total=initial_subtotal
+                ordered_product=product,
+                subtotal=item['total'],
+                quantity=item['quantity'],
+                whole_total=initial_subtotal,
+                color=c,
+                size=s
+                # Add other fields as needed
             )
             order.save()
         cart_items.delete()
-        last_order = Order.objects.filter(customer=user_ex).latest('order_date')
-    return render(request, 'checkout.html', {'initial_subtotal': initial_subtotal, 'order': last_order})
-
+        try:
+            last_order = Order.objects.filter(customer=user_ex).latest('order_date')
+        except Order.DoesNotExist:
+            raise Http404("No matching Order found")
+        return render(request, 'checkout.html', {'initial_subtotal': initial_subtotal, 'order': last_order})
+    else:
+        return HttpResponseBadRequest("Invalid request method")
 @csrf_exempt
 def shipmentAddress(request):
     if request.method == "POST":

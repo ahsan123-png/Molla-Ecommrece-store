@@ -31,9 +31,9 @@
 											<th></th>
 										</tr>
 									</thead>
-									<tbody id="cart-items">
-										{% for item in cart_data %}
-										<tr>
+									<tbody>
+									{% for item in cart_data %}
+										<tr id="cart-items">
 											<td class="product-col">
 												<div class="product">
 													<figure class="product-media">
@@ -57,7 +57,7 @@
 												<button class="btn-remove" onclick="removeFromCart('{{ item.product_id }}')"><i class="icon-close"></i></button>
 											</td>
 										</tr>
-										{% endfor %}
+									{% endfor %}
 									</tbody>
 								</table><!-- End .table table-wishlist -->
 	                			<div class="cart-bottom">
@@ -176,47 +176,25 @@
 					}
 				});
 			}
-
-
-		// Function to handle "Proceed to Checkout" button click event
-		// Function to handle "Proceed to Checkout" button click event
 			function proceedToCheckout() {
 				var cartData = [];
 				var initialSubtotal = parseFloat(document.querySelector('.summary-subtotal td:last-child').textContent.replace('$', ''));
-				// Retrieve quantity directly from the DOM
 				var quantity = parseInt(document.querySelector('.quantity-input').value);
-				
-				// Retrieve total from the DOM
 				var total = parseFloat(document.querySelector('.total-col').textContent.replace('$', ''));
-				
-				// Log quantity to check if it's properly retrieved
-				console.log("Quantity:", quantity);
-				
-				var encodedQuantity = encodeURIComponent(quantity);
-				var encodedTotal = encodeURIComponent(total);
-				// Collect product name, quantity, and total from each row in the cart
-				document.querySelectorAll('.cart-items tr').forEach(function(row) {
-					console.log("Processing row:", row);
-					var productName = row.querySelector('.product-title').textContent;
-					console.log("Product Name:", productName);
+				var rows = document.querySelectorAll('.table-cart tbody tr');
+				for (var i = 0; i < rows.length; i++) {
+					var row = rows[i];
 					var quantity = parseInt(row.querySelector('.quantity-input').value);
-					console.log("Quantity:", quantity);
-					var price = parseFloat(row.querySelector('.price-col').textContent.replace('$', ''));
-					console.log("Price:", price);
 					var total = parseFloat(row.querySelector('.total-col').textContent.replace('$', ''));
-					console.log("Total:", total);
+					var price = parseFloat(row.querySelector('.price-col').textContent.replace('$', ''));
 					cartData.push({
-						'product_name': productName,
 						'quantity': quantity,
 						'price': price,
 						'total': total
 					});
-				});
-
-				console.log("Cart Data:", cartData); // Debugging
-
+				}
 				var encodedCartData = encodeURIComponent(JSON.stringify(cartData));
-				var checkoutUrl = "{% url 'checkout' %}?cart_data=" + encodedCartData + "&initial_subtotal=" + initialSubtotal + "&quantity=" + encodedQuantity + "&total=" + encodedTotal;
+				var checkoutUrl = "{% url 'checkout' %}?cart_data=" + encodedCartData + "&initial_subtotal=" + initialSubtotal + "&quantity=" + quantity + "&total=" + total;
 				window.location.href = checkoutUrl;
 			}
 		</script>
