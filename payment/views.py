@@ -7,6 +7,7 @@ from django.shortcuts import redirect, render
 import stripe
 # from stripe import Card, Order 
 from django.conf import settings
+from order.models import Order, ShipmentAddress
 # from django.http import HttpResponseRedirect
 # from django.urls import reverse
 # from product.models import Product
@@ -76,7 +77,21 @@ def payment(request):
             return redirect("fail")
 
 def success(request):
-    return render(request,"success.html")
+    if request.method == "GET":
+        user=request.user
+        if isinstance(user,UserEx):
+            userEx=user
+        else:
+            userEx=UserEx.objects.get(id=user.id)
+        latest_order=Order.objects.filter(customer=userEx).order_by("-id").first()
+        shipment_address=ShipmentAddress.objects.filter(customer=userEx).order_by("-id").first()
+        context={
+
+            "latest_order" : latest_order,
+            "shipment_address" :shipment_address
+        }
+
+    return render(request,"success.html", context)
 
 
 def failed(request):
