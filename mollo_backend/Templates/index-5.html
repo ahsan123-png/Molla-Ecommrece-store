@@ -658,36 +658,41 @@
                                         </div><!-- End .product-body -->
                                     </div><!-- End .product -->
                                 </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
+                                {% for product in product_data %}
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2">
                                         <figure class="product-media">
-                                            <a href="product.html">
-                                                <img src="{% static 'assets/images/demos/demo-5/products/product-6-1.jpg' %}" alt="Product image" class="product-image">
-                                                <img src="{% static 'assets/images/demos/demo-5/products/product-6-2.jpg' %}" alt="Product image" class="product-image-hover">
+                                            <a href="{% url 'getProduct' id=product.id %}">
+                                                {% if product.product_pictures %}
+                                                    <img src="{{ product.product_pictures.0.picture.url}}" alt="Product image" class="product-image">
+                                                    {% if product.product_pictures.count > 1 %}
+                                                    <img src="{{ product.product_pictures.1.picture.url }}" alt="Product image" class="product-image-hover">
+                                                    {% endif %}
+                                                {% endif %}
                                             </a>
 
                                             <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist" title="Add to wishlist"><span>add to wishlist</span></a>
+                                                <a href="{% url 'getProduct' id=product.id %}" class="btn-product-icon btn-wishlist" title="Add to wishlist"><span>add to wishlist</span></a>
                                             </div><!-- End .product-action -->
 
                                             <div class="product-action product-action-transparent">
-                                                <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                                <a href="{% url 'getProduct' id=product.id %}" class="btn-product btn-cart"><span>add to cart</span></a>
                                             </div><!-- End .product-action -->
                                         </figure><!-- End .product-media -->
 
                                         <div class="product-body">
                                             <div class="product-cat">
-                                                <a href="#">Shoes</a>
+                                                <a href="#">{{product.category}}</a>
                                             </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html">Sandals with lacing</a></h3><!-- End .product-title -->
+                                            <h3 class="product-title"><a href="{% url 'getProduct' id=product.id %}">{{product.product_name}}</a></h3><!-- End .product-title -->
                                             <div class="product-price">
-                                                <span class="new-price">Now $70.00</span>
+                                                <span class="new-price">Now ${{product.price}}</span>
                                                 <span class="old-price">Was $155.00</span>
                                             </div><!-- End .product-price -->
                                         </div><!-- End .product-body -->
                                     </div><!-- End .product -->
                                 </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
+                                {% endfor %}
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2">
                                         <figure class="product-media">
@@ -1129,7 +1134,7 @@
                 </div><!-- End .tab-content -->
 
                 <div class="more-container text-center mt-1 mb-3">
-                    <a href="#" class="btn btn-outline-primary-2 btn-round btn-more">Load more</a>
+                    <a href="{% url "lists" %}" class="btn btn-outline-primary-2 btn-round btn-more">Load more</a>
                 </div><!-- End .more-container -->
             </div><!-- End .container -->
                 

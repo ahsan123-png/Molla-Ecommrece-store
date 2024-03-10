@@ -1,4 +1,7 @@
 import json
+from django.core.paginator import Paginator
+from product.models import Product , ProductPicture
+from product.serializers import ProductPictureSerializer,ProductSerializer
 from typing import Any
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -11,7 +14,43 @@ from .models import UserEx
 from .serializers import UserSerializer
 # =======================================
 def home(request):
-    return render(request, "index-5.html")
+    try:
+        product_data = []
+        products = Product.objects.all()
+        paginator = Paginator(products, 12)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        if not products:
+            return render(
+                request, 
+                "index-5.html",
+                {
+                    "error": "No products available"
+                }
+            )
+        for product in page_obj:
+            product_serializer = ProductSerializer(product, context={"request": request}).data
+            product_pictures = ProductPicture.objects.filter(product=product)
+            product_serializer['product_pictures'] = product_pictures
+            product_data.append(product_serializer)
+        return render(
+            request, 
+            "index-5.html",
+            {
+                "product_data": product_data,
+                "page_obj": page_obj
+            }
+        )
+    except Exception as e:
+        return render(
+            request, 
+            "list-products.html",
+            {
+                "error": f"Internal Server Error: {e}"
+            },
+            status=500
+        )
+    
 #==== register user ====
 @csrf_exempt
 def register(request):
