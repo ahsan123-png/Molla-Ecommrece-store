@@ -69,7 +69,7 @@ def products(request):
     try:
         product_data = []
         products = Product.objects.all()
-        paginator = Paginator(products, 12)
+        paginator = Paginator(products, 100)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
