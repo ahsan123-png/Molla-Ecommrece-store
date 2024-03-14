@@ -69,9 +69,15 @@ def products(request):
     try:
         product_data = []
         products = Product.objects.all()
-        paginator = Paginator(products, 12)
+        paginator = Paginator(products, 100)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
+
+        # Filter products based on selected subcategories
+        selected_subcategories = request.GET.getlist('subcategory')
+        if selected_subcategories:
+            products = products.filter(subcategory__in=selected_subcategories)
+
         if not products:
             return render(
                 request, 
@@ -80,17 +86,23 @@ def products(request):
                     "error": "No products available"
                 }
             )
+        
         for product in page_obj:
             product_serializer = ProductSerializer(product, context={"request": request}).data
             product_pictures = ProductPicture.objects.filter(product=product)
             product_serializer['product_pictures'] = product_pictures
             product_data.append(product_serializer)
+        
+        # Get distinct subcategories for filtering
+        subcategories = Product.objects.values_list('subcategory', flat=True).distinct()
+
         return render(
             request, 
             "list-products.html",
             {
                 "product_data": product_data,
-                "page_obj": page_obj
+                "page_obj": page_obj,
+                "subcategories": subcategories
             }
         )
     except Exception as e:
@@ -102,6 +114,7 @@ def products(request):
             },
             status=500
         )
+
 # # =========== Get blog by Id =============
 def getProduct(request, id):
     if request.method == "GET":

@@ -36,6 +36,8 @@ def cart(request):
 @csrf_exempt
 def addToWishlist(request):
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('signin')
         user = request.user
         if isinstance(user, UserEx):  # Check if the user is an instance of UserEx
             user_ex = user
@@ -101,6 +103,8 @@ def addCart(request, id):
 @csrf_exempt
 def addProductToCart(request, id):
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            return redirect('signin')
         try:
             product_item = Product.objects.get(id=id)
             user = request.user

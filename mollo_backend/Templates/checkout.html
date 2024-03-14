@@ -281,36 +281,22 @@
 	</main><!-- End .main -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
-		// JavaScript to open the payment popup when "Credit Card (Stripe)" link is clicked
 		document.getElementById('card-payment-link').addEventListener('click', function(event) {
 			event.preventDefault(); // Prevent the default behavior of the link
 			document.getElementById('payment-popup').style.display = 'block'; // Display the payment popup
 		});
-		// JavaScript to close the payment popup when the close button is clicked
 		document.querySelector('.close-btn').addEventListener('click', function() {
 			document.getElementById('payment-popup').style.display = 'none'; // Hide the payment popup
 		});
 		$(document).ready(function() {
-			// Attach event listener to the button click event
 			$('#place-order-btn').click(function(event) {
-				// Prevent the default button click behavior
 				event.preventDefault();
-				
-				// Find the form associated with the button
 				var form = $(this).closest('form');
-				
-				// Serialize form data
 				var formData = form.serialize();
-				
-				// Get the CSRF token value from the form
 				var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
-				
-				// Include the CSRF token in the request headers
 				var headers = {
 					'X-CSRFToken': csrfToken
 				};
-		
-				// Perform an AJAX POST request to the form's action URL
 				$.ajax({
 					type: 'POST',
 					url: form.attr('action'),

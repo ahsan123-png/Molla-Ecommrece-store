@@ -1,17 +1,11 @@
 {% extends "base.html" %}
-
 {% block body %}
 {% load static %}
-
-
-
-
-
         <main class="main">
             <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
                 <div class="container">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
                         <li class="breadcrumb-item"><a href="#">Pages</a></li>
                         <li class="breadcrumb-item active" aria-current="page">About us</li>
                     </ol>
@@ -28,12 +22,12 @@
                     <div class="row">
                         <div class="col-lg-6 mb-3 mb-lg-0">
                             <h2 class="title">Our Vision</h2><!-- End .title -->
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. </p>
+                            <p>Empowering individuals worldwide through innovative solutions. Fostering a community of collaboration and creativity. Striving for excellence and sustainability in all endeavors. Transforming aspirations into reality, one step at a time.                            </p>
                         </div><!-- End .col-lg-6 -->
                         
                         <div class="col-lg-6">
                             <h2 class="title">Our Mission</h2><!-- End .title -->
-                            <p>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est. Sed lectus. <br>Praesent elementum hendrerit tortor. Sed semper lorem at felis. </p>
+                            <p>Fueling progress by delivering exceptional products and services. Prioritizing customer satisfaction and social responsibility. Embracing diversity and fostering a culture of continuous improvement. Empowering individuals to thrive in a dynamic global marketplace. </p>
                         </div><!-- End .col-lg-6 -->
                     </div><!-- End .row -->
 
@@ -45,8 +39,8 @@
                         <div class="row">
                             <div class="col-lg-5 mb-3 mb-lg-0">
                                 <h2 class="title">Who We Are</h2><!-- End .title -->
-                                <p class="lead text-primary mb-3">Pellentesque odio nisi, euismod pharetra a ultricies <br>in diam. Sed arcu. Cras consequat</p><!-- End .lead text-primary -->
-                                <p class="mb-2">Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Suspendisse potenti. Sed egestas, ante et vulputate volutpat, uctus metus libero eu augue. </p>
+                                <p class="lead text-primary mb-3">We are a dynamic force, uniting innovation with purpose. Committed to excellence, diversity, and sustainable growth. Join us in shaping a brighter future, one connection at a time.</p><!-- End .lead text-primary -->
+                                <p class="mb-2">Innovative, purpose-driven, and diverse. Committed to excellence and sustainable growth. Together, we shape a brighter future through meaningful connections.</p>
 
                                 <a href="blog.html" class="btn btn-sm btn-minwidth btn-outline-primary-2">
                                     <span>VIEW OUR NEWS</span>
@@ -141,12 +135,13 @@
                         <div class="col-md-4">
                             <div class="member member-anim text-center">
                                 <figure class="member-media">
-                                    <img src="{% static 'assets/images/team/member-1.jpg' %}" alt="member photo">
+                                    <img src="{% static 'assets/images/team/ceo.jpg' %}" alt="member photo">
 
                                     <figcaption class="member-overlay">
                                         <div class="member-overlay-content">
-                                            <h3 class="member-title">Samanta Grey<span>Founder & CEO</span></h3><!-- End .member-title -->
-                                            <p>Sed pretium, ligula sollicitudin viverra, tortor libero sodales leo, eget blandit nunc.</p> 
+                                            <h3 class="member-title"> (Badar) الشيخ البدر بن جمال<span>Founder & CEO</span></h3><!-- End .member-title -->
+                                            <p>
+                                                Visionary leader driving innovation, integrity, and excellence with determination.</p> 
                                             <div class="social-icons social-icons-simple">
                                                 <a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
                                                 <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
@@ -156,7 +151,7 @@
                                     </figcaption><!-- End .member-overlay -->
                                 </figure><!-- End .member-media -->
                                 <div class="member-content">
-                                    <h3 class="member-title">Samanta Grey<span>Founder & CEO</span></h3><!-- End .member-title -->
+                                    <h3 class="member-title">(Badar) الشيخ البدر بن جمال<span>Founder & CEO (Al-Mollai Group)</span></h3><!-- End .member-title -->
                                 </div><!-- End .member-content -->
                             </div><!-- End .member -->
                         </div><!-- End .col-md-4 -->
@@ -164,12 +159,12 @@
                         <div class="col-md-4">
                             <div class="member member-anim text-center">
                                 <figure class="member-media">
-                                    <img src="{% static 'assets/images/team/member-2.jpg' %}" alt="member photo">
+                                    <img src="{% static 'assets/images/team/brandaa.jpg' %}" alt="member photo">
 
                                     <figcaption class="member-overlay">
                                         <div class="member-overlay-content">
-                                            <h3 class="member-title">Bruce Sutton<span>Sales & Marketing Manager</span></h3><!-- End .member-title -->
-                                            <p>Sed pretium, ligula sollicitudin viverra, tortor libero sodales leo, eget blandit nunc.</p> 
+                                            <h3 class="member-title">Fatima Muskan<span>Sales & Marketing Manager</span></h3><!-- End .member-title -->
+                                            <p>Strategist, communicator, motivator. Orchestrating dynamic campaigns for impactful results.</p> 
                                             <div class="social-icons social-icons-simple">
                                                 <a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
                                                 <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
@@ -179,7 +174,7 @@
                                     </figcaption><!-- End .member-overlay -->
                                 </figure><!-- End .member-media -->
                                 <div class="member-content">
-                                    <h3 class="member-title">Bruce Sutton<span>Sales & Marketing Manager</span></h3><!-- End .member-title -->
+                                    <h3 class="member-title">Fatima Muskan<span>Sales & Marketing Manager</span></h3><!-- End .member-title -->
                                 </div><!-- End .member-content -->
                             </div><!-- End .member -->
                         </div><!-- End .col-md-4 -->
@@ -191,8 +186,8 @@
 
                                     <figcaption class="member-overlay">
                                         <div class="member-overlay-content">
-                                            <h3 class="member-title">Janet Joy<span>Product Manager</span></h3><!-- End .member-title -->
-                                            <p>Sed pretium, ligula sollicitudin viverra, tortor libero sodales leo, eget blandit nunc.</p> 
+                                            <h3 class="member-title">Fiza Ahmad<span>Product Manager</span></h3><!-- End .member-title -->
+                                            <p>Innovator, strategist, product champion. Driving growth and success through visionary leadership.</p> 
                                             <div class="social-icons social-icons-simple">
                                                 <a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
                                                 <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
@@ -202,7 +197,7 @@
                                     </figcaption><!-- End .member-overlay -->
                                 </figure><!-- End .member-media -->
                                 <div class="member-content">
-                                    <h3 class="member-title">Janet Joy<span>Product Manager</span></h3><!-- End .member-title -->
+                                    <h3 class="member-title">Fiza Ahmad<span>Product Manager</span></h3><!-- End .member-title -->
                                 </div><!-- End .member-content -->
                             </div><!-- End .member -->
                         </div><!-- End .col-md-4 -->
@@ -229,16 +224,16 @@
                             }'>
                             <blockquote class="testimonial text-center">
                                 <img src="{% static 'assets/images/testimonials/user-1.jpg' %}" alt="user">
-                                <p>“ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Pellentesque aliquet nibh nec urna. <br>In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo. Suspendisse potenti. ”</p>
+                                <p>“ Exceptional service! Exceeded expectations with prompt communication and top-notch products. Highly recommended for their reliability and professionalism. ”</p>
                                 <cite>
-                                    Jenson Gregory
+                                    Anis Butt
                                     <span>Customer</span>
                                 </cite>
                             </blockquote><!-- End .testimonial -->
 
                             <blockquote class="testimonial text-center">
                                 <img src="{% static 'assets/images/testimonials/user-2.jpg' %}" alt="user">
-                                <p>“ Impedit, ratione sequi, sunt incidunt magnam et. Delectus obcaecati optio eius error libero perferendis nesciunt atque dolores magni recusandae! Doloremque quidem error eum quis similique doloribus natus qui ut ipsum.Velit quos ipsa exercitationem, vel unde obcaecati impedit eveniet non. ”</p>
+                                <p>“ Customers rave about our impeccable service and quality offerings. Consistently exceeding expectations, we're their go-to for satisfaction guaranteed. ”</p>
 
                                 <cite>
                                     Victoria Ventura
