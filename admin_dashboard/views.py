@@ -1,5 +1,6 @@
-from django.shortcuts import render
-
+from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate,login,logout
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 def dashboard(request):
     return render(request,"dashboard.html")
@@ -12,14 +13,24 @@ def adminForms(request):
 
 def adminIcons(request):
     return render (request,"admin/icons.html")
-
+@csrf_exempt
 def adminLogin(request):
+    if request.method=="POST":
+        username=request.POST.get("username")
+        password=request.POST.get("password")
+        user=authenticate(request,username=username ,password=password)
+        if not user.is_superuser:
+            return redirect("adminLogin")
+        if user is not None:
+            login(request,user)
+            return redirect("adminDashboard")
     return render (request,"admin/login.html")
 
 def adminProfile(request):
     return render (request,"admin/profile.html")
 
 def adminRegister(request):
+    
     return render (request,"admin/register.html")
 
 def adminResetPassword(request):
