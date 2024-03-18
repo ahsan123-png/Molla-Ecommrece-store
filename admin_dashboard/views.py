@@ -1,9 +1,13 @@
+from datetime import date
+from django.db.models import Sum
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
 from product.models import Product
 from order.models import Order
 from django.contrib.auth.decorators import login_required
+
+from users.models import UserEx
 # Create your views here.
 def dashboard(request):
     return render(request,"dashboard.html")
@@ -13,7 +17,24 @@ def homeDashboard(request):
     if not request.user.is_authenticated:
         return redirect('adminLogin')
     else:
-        return render(request, 'admin/homeadmin.html')
+         # Get total sales
+        total_sales = Order.objects.count()
+        today_date = date.today()
+        today_sales = Order.objects.filter(order_date__date=today_date).count()
+        total_revenue = Order.objects.aggregate(total_revenue=Sum('whole_total'))['total_revenue']
+        today_revenue = Order.objects.filter(order_date__date=today_date).aggregate(today_revenue=Sum('whole_total'))['today_revenue']
+        latest_orders = Order.objects.all().order_by('-order_date')[:5]
+        customer_ids = [order.customer_id for order in latest_orders]
+        customers = UserEx.objects.filter(id__in=customer_ids)
+        context = {
+            'total_sales': total_sales,
+            'today_sales': today_sales,
+            'total_revenue': total_revenue,
+            'today_revenue': today_revenue,
+            "latest_orders" : latest_orders,
+            "customers" : customers
+        }
+        return render(request, 'admin/homeadmin.html' , context)
 # ====== login admin ========= 
 @csrf_exempt
 def adminLogin(request):
