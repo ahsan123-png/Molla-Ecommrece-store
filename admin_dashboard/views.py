@@ -16,8 +16,7 @@ def dashboard(request):
 def homeDashboard(request):
     if not request.user.is_authenticated:
         return redirect('adminLogin')
-    else:
-         # Get total sales
+    if request.user.is_superuser:
         total_sales = Order.objects.count()
         today_date = date.today()
         today_sales = Order.objects.filter(order_date__date=today_date).count()
@@ -35,6 +34,8 @@ def homeDashboard(request):
             "customers" : customers
         }
         return render(request, 'admin/homeadmin.html' , context)
+    else:
+        return redirect("adminLogin")
 # ====== login admin ========= 
 @csrf_exempt
 def adminLogin(request):
@@ -46,7 +47,7 @@ def adminLogin(request):
             return redirect("adminLogin")
         if user is not None:
             login(request,user)
-            return redirect("adminDashboard")
+            return redirect("home_dashboard")
     return render (request,"admin/signin.html")
 # ==== admin registeration ========
 def adminRegister(request):
