@@ -1,125 +1,109 @@
-{% extends "base.html" %}
+{% extends "admin/adminbase.html" %}
 {% load static %}
 {% block body %}
-
-
-
-
-<title>Add Product</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-    }
-    form {
-        max-width: 500px;
-        margin: 0 auto;
-    }
-    input[type="text"],
-    textarea {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    input[type="file"] {
-        margin-top: 10px;
-    }
-    input[type="submit"] {
-        background-color: #cc9966;
-        color: white;
-        padding: 14px 20px;
-        margin: 8px 0;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        width: 100%;
-    }
-    input[type="submit"]:hover {
-        background-color: #e1b674;
-    }
-</style>
-
-<body>
-    <form id="add_product_form" action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label for="product_name">Product Name:</label>
-        <input type="text" id="product_name" name="product_name" required>
-
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="4" required></textarea>
-
-        <label for="brand">Brand:</label>
-        <input type="text" id="brand" name="brand" required>
-
-        <label for="price">Price per Unit</label>
-        <input type="text" id="price" name="price" required>
-
-        <label for="category">Category:</label>
-        <input type="text" id="category" name="category" required>
-
-        <label for="subcategory">Subcategory:</label>
-        <input type="text" id="subcategory" name="subcategory" required>
-
-        <label for="product_type">Product Type:</label>
-        <select id="product_type" name="product_type" required>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select>
-
-        <label for="pictures">Pictures:</label>
-        <input type="file" id="pictures" name="pictures" accept="image/*" multiple required>
-
-        <!-- Container for dynamic color fields -->
-        <div id="color_fields"></div>
-
-        <button type="button" onclick="addColor()">Add Color</button>
-
-        <input type="submit" value="Submit">
-    </form>
-
-    <script>
-        function addColor() {
-            var colorFields = document.getElementById('color_fields');
-            var colorHtml = `
-                <div class="color">
-                    <label for="color">Color:</label>
-                    <input type="text" name="color[]" required>
-
-                    <!-- Container for dynamic size and stock fields -->
-                    <div class="size_stock_fields"></div>
-
-                    <button type="button" onclick="addVariant(this)">Add Variant</button>
-                </div>
-            `;
-            colorFields.insertAdjacentHTML('beforeend', colorHtml);
+    <title>Add Product</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
         }
-
-        function addVariant(button) {
-            var sizeStockFields = button.parentElement.querySelector('.size_stock_fields');
-            var variantHtml = `
-                <div class="variant">
-                    <label for="size">Size:</label>
-                    <input type="text" name="size[]" required>
-
-                    <label for="stock">Stock:</label>
-                    <input type="text" name="stock[]" required>
-                </div>
-            `;
-            sizeStockFields.insertAdjacentHTML('beforeend', variantHtml);
+        form {
+            max-width: 500px;
+            margin: 0 auto;
         }
-    </script>
-</body>
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="file"] {
+            margin-top: 10px;
+        }
+        input[type="submit"] {
+            background-color: #cc9966;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        input[type="submit"]:hover {
+            background-color: #e1b674;
+        }
+    </style>
+    <body>
+        <form id="add_product_form" action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="product_name">Product Name:</label>
+            <input type="text" id="product_name" name="product_name" required>
 
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
 
+            <label for="brand">Brand:</label>
+            <input type="text" id="brand" name="brand" required>
 
+            <label for="price">Price per Unit</label>
+            <input type="text" id="price" name="price" required>
 
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" required>
 
+            <label for="subcategory">Subcategory:</label>
+            <input type="text" id="subcategory" name="subcategory" required>
+
+            <label for="product_type">Product Type:</label>
+            <select id="product_type" name="product_type" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <label for="pictures">Pictures:</label>
+            <input type="file" id="pictures" name="pictures" accept="image/*" multiple required>
+
+            <!-- Container for dynamic color fields -->
+            <div id="color_fields"></div>
+
+            <button type="button" onclick="addColor()">Add Color</button>
+
+            <input type="submit" value="Submit">
+        </form>
+
+        <script>
+            function addColor() {
+                var colorFields = document.getElementById('color_fields');
+                var colorHtml = `
+                    <div class="color">
+                        <label for="color">Color:</label>
+                        <input type="text" name="color[]" required>
+
+                        <!-- Container for dynamic size and stock fields -->
+                        <div class="size_stock_fields"></div>
+
+                        <button type="button" onclick="addVariant(this)">Add Variant</button>
+                    </div>
+                `;
+                colorFields.insertAdjacentHTML('beforeend', colorHtml);
+            }
+
+            function addVariant(button) {
+                var sizeStockFields = button.parentElement.querySelector('.size_stock_fields');
+                var variantHtml = `
+                    <div class="variant">
+                        <label for="size">Size:</label>
+                        <input type="text" name="size[]" required>
+
+                        <label for="stock">Stock:</label>
+                        <input type="text" name="stock[]" required>
+                    </div>
+                `;
+                sizeStockFields.insertAdjacentHTML('beforeend', variantHtml);
+            }
+        </script>
+    </body>
 {% endblock body %}
-
-
-
-
-
-
