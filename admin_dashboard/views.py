@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
 from product.models import Product
-from order.models import Order
+from order.models import Notification, Order
 from django.contrib.auth.decorators import login_required
 
 from users.models import UserEx
@@ -25,17 +25,29 @@ def homeDashboard(request):
         latest_orders = Order.objects.all().order_by('-order_date')[:5]
         customer_ids = [order.customer_id for order in latest_orders]
         customers = UserEx.objects.filter(id__in=customer_ids)
+
+        #unread and read notifications
+        unread_notifications = Notification.objects.filter(is_read=False)
+        notifications_count = unread_notifications.count()
         context = {
             'total_sales': total_sales,
             'today_sales': today_sales,
             'total_revenue': total_revenue,
             'today_revenue': today_revenue,
             "latest_orders" : latest_orders,
-            "customers" : customers
+            "customers" : customers,
+            'unread_notifications': unread_notifications,
+            'notifications_count': notifications_count,
         }
         return render(request, 'admin/homeadmin.html' , context)
     else:
-        return redirect("adminLogin")
+        return redirect("admin_login")
+#=== Notifications ====
+def mark_notification_as_read(request, notification_id):
+    notification = Notification.objects.get(pk=notification_id)
+    notification.is_read = True
+    notification.save()
+    return redirect('home_dashboard')
 # ====== login admin ========= 
 @csrf_exempt
 def adminLogin(request):
