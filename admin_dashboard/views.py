@@ -71,8 +71,31 @@ def adminForms(request):
 def adminChart(request):
     return render (request,"admin/chart.html")
 # ===== dashboard tables ======
-def adminTables(request):
-    return render (request,"admin/table.html")
+def orderList(request):
+    if request.method == "GET":
+        orders = Order.objects.all()
+        order_data = []
+        for order in orders:
+            customer = order.customer
+            user_info = UserEx.objects.get(id=customer.id)
+            user_email = user_info.email
+
+            order_info = {
+                'order_id': order.id,
+                'order_date': order.order_date,
+                'ordered_product_id': order.ordered_product.id,
+                'customer_email': user_email,
+                'quantity': order.quantity,
+                'color': order.color,
+                'size': order.size,
+                'product_total': order.subtotal,
+                'total_bill': order.whole_total
+            }
+            order_data.append(order_info)
+        context = {
+            "order_data": order_data
+        }
+        return render(request, "admin/table.html", context)
 # ======= products and order counts ========
 @csrf_exempt
 def productCounts(request):

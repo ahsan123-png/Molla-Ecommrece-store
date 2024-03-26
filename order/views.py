@@ -104,3 +104,9 @@ this is the Query to get the all order of a user from shipment address
 shipment_address = ShipmentAddress.objects.get(id=your_shipment_address_id)
 orders = shipment_address.orders.all()
 """
+
+# ====> get orders =====
+def getAllOrders(request):
+    pass
+
+        
