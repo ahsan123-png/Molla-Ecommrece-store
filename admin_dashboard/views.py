@@ -15,7 +15,7 @@ def dashboard(request):
 @login_required
 def homeDashboard(request):
     if not request.user.is_authenticated:
-        return redirect('adminLogin')
+        return redirect('admin_login')
     if request.user.is_superuser:
         total_sales = Order.objects.count()
         today_date = date.today()
@@ -101,4 +101,34 @@ def orderList(request):
 def productCounts(request):
     if request.method == "GET":
         pass
+# ========= admin base ==========
+@login_required
+def adminBase(request):
+    if not request.user.is_authenticated:
+        return redirect('admin_login')
+    if request.user.is_superuser:
+        total_sales = Order.objects.count()
+        today_date = date.today()
+        today_sales = Order.objects.filter(order_date__date=today_date).count()
+        total_revenue = Order.objects.aggregate(total_revenue=Sum('whole_total'))['total_revenue']
+        today_revenue = Order.objects.filter(order_date__date=today_date).aggregate(today_revenue=Sum('whole_total'))['today_revenue']
+        latest_orders = Order.objects.all().order_by('-order_date')[:5]
+        customer_ids = [order.customer_id for order in latest_orders]
+        customers = UserEx.objects.filter(id__in=customer_ids)
 
+        #unread and read notifications
+        unread_notifications = Notification.objects.filter(is_read=False)
+        notifications_count = unread_notifications.count()
+        context = {
+            'total_sales': total_sales,
+            'today_sales': today_sales,
+            'total_revenue': total_revenue,
+            'today_revenue': today_revenue,
+            "latest_orders" : latest_orders,
+            "customers" : customers,
+            'unread_notifications': unread_notifications,
+            'notifications_count': notifications_count,
+        }
+        return render(request, 'admin/adminbase.html' , context)
+    else:
+        return redirect("admin_login")
