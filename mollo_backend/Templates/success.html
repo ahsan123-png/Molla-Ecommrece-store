@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order Confirmation</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f0f8f0; /* Light green background */
+                margin: 0;
+                padding: 0;
+            }
+            .containers {
+                max-width: 800px;
+                margin: 50px auto;
+                padding: 20px;
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            }
+            .checkmark {
+                font-size: 48px;
+                color: #4caf50; /* Green checkmark color */
+            }
+            .thank-you {
+                font-size: 24px;
+                margin-top: 10px;
+            }
+            .progress-bar {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 20px;
+            }
+            .progress-step {
+                flex: 1;
+                text-align: center;
+                font-size: 14px;
+                color: #888;
+            }
+            .progress-step.active {
+                color: #333;
+                font-weight: bold;
+            }
+            .order-summary {
+                margin-top: 20px;
+                text-align: left;
+            }
+            footer {
+                margin-top: 20px;
+                font-size: 12px;
+                color: #888;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="containers">
+            <div class="checkmark">✓</div>
+            <p class="thank-you">THANK YOU<br>Your order is confirmed</p>
+            
+            <div class="order-summary">
+                <p>Order #{{ latest_order.id }} was placed on {{ latest_order.created_at|date:"F j, Y" }} and is currently in progress.</p>
+                {% if shipment_address.payment_method == 'cash_on_delvery' %}
+                    <p>Pay with Cash on Delivery</p>
+                {% else %}
+                    <p>Pay with {{ shipment_address.payment_method }}</p>
+                {% endif %}
+            </div>
+            <footer>We will be sending you an email confirmation shortly.</footer>
+        </div>
+    </body>
+{% endblock body %}
+
+

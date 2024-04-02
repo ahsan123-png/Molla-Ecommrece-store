@@ -1,0 +1,52 @@
+
+{% extends "admin/adminbase.html" %}
+{% load static %}
+{% block body %}
+    <body>
+        <div class="container-xxl position-relative bg-white d-flex p-0">
+            <!-- Spinner Start -->
+
+            <!-- Content Start -->
+            <div class="content">
+                <!-- Table Start -->
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-12" style="margin-left: -16%; margin-top: 10%;">
+                            <div class="bg-light rounded h-100 p-4">
+                                <h6 class="mb-4">Customer Contact Message</h6>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Customer Name</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Phone Number</th>
+                                                <th scope="col">Message Subject</th>
+                                                <th scope="col">Message</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for i in data %}
+                                            <tr>
+                                                <td>{{ i.name }}</td>
+                                                <td>{{ i.email }}</td>
+                                                <td>{{ i.phone}}</td>
+                                                <td>{{ i.subject }}</td>
+                                                <td>{{ i.message }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Table End -->
+            </div>
+            <!-- Content End -->
+            <!-- Back to Top -->
+            <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        </div>
+    </body>
+{% endblock body %}
