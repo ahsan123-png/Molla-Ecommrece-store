@@ -66,7 +66,7 @@ def adminLogin(request):
 def adminRegister(request):
     return render (request,"admin/signup.html")
 # ==== admin forms ========
-def adminForms(request):
+def messages(request):
     contactData=Contact.objects.all()
     conData=[]
     for data in contactData:
@@ -83,8 +83,8 @@ def adminForms(request):
     }
     return render (request,"admin/contact_messages.html" , context)
 # ==== admin charts ========
-def adminChart(request):
-    return render (request,"admin/chart.html")
+def inventory(request):
+    return render (request,"admin/inventory.html")
 # ===== dashboard tables ======
 def orderList(request):
     if request.method == "GET":

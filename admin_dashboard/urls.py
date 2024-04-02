@@ -5,9 +5,9 @@ urlpatterns = [
     path('home_dashboard', views.homeDashboard, name='home_dashboard'), 
     path('dashboard_base', views.adminBase, name='dashboard_base'), 
     path('admin/notification/mark_read/<int:notification_id>/', views.mark_notification_as_read, name='mark_notification_as_read'),
-    path('forms', views.adminForms, name='adminForms'), 
+    path('messages', views.messages, name='messages'), 
     path('admin_login', views.adminLogin, name='admin_login'),  
     path('admin_register', views.adminRegister, name='adminRegister'),
     path('orderList', views.orderList, name='orderList'),
-    path('charts', views.adminChart, name='adminChart'),
+    path('inventory', views.inventory, name='inventory'),
 ]
