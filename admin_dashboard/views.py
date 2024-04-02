@@ -3,7 +3,7 @@ from django.db.models import Sum
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
-from product.models import Product
+from product.models import Inventory, Product, ProductVariant
 from order.models import Notification, Order
 from django.contrib.auth.decorators import login_required
 
@@ -84,7 +84,29 @@ def messages(request):
     return render (request,"admin/contact_messages.html" , context)
 # ==== admin charts ========
 def inventory(request):
-    return render (request,"admin/inventory.html")
+    inventory_data = Inventory.objects.all()
+    inventory_items = []
+    
+    for inventory_item in inventory_data:
+        product_data = inventory_item.product
+        productVariant=ProductVariant.objects.get(id=product_data.id)
+        inventory_items.append({
+            'product_id': product_data.id,
+            'product_name': product_data.product_name,
+            'stock_quantity': inventory_item.stock_quantity,
+            'price': product_data.price,
+            'brand': product_data.brand, 
+            'productType': product_data.productType, 
+            'category': product_data.category, 
+            'subcategory': product_data.subcategory, 
+            'color': productVariant.color, 
+            'size': productVariant.size, 
+        })
+    
+    context = {
+        'inventory_items': inventory_items,
+    }
+    return render(request, 'admin/inventory.html', context)
 # ===== dashboard tables ======
 def orderList(request):
     if request.method == "GET":

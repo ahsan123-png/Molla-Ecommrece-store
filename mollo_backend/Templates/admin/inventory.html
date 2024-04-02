@@ -21,19 +21,28 @@
                                                 <th scope="col">Product ID</th>
                                                 <th scope="col">Product Name</th>
                                                 <th scope="col">Available Stock</th>
+                                                <th scope="col">Product Brand</th>
+                                                <th scope="col">Product Type</th>
+                                                <th scope="col">Product Catagory</th>
+                                                <th scope="col">Product  Sub-Catagory</th>
                                                 <th scope="col">Product Price</th>
                                                 <th scope="col">Availabe Color</th>
                                                 <th scope="col">Available Size</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for i in data %}
+                                            {% for i in inventory_items %}
                                             <tr>
-                                                <td>{{ i.name }}</td>
-                                                <td>{{ i.email }}</td>
-                                                <td>{{ i.phone}}</td>
-                                                <td>{{ i.subject }}</td>
-                                                <td>{{ i.message }}</td>
+                                                <td>{{ i.product_id }}</td>
+                                                <td>{{ i.product_name }}</td>
+                                                <td>{{ i.stock_quantity}}</td>
+                                                <td>{{ i.brand }}</td>
+                                                <td>{{ i.productType }}</td>
+                                                <td>{{ i.category }}</td>
+                                                <td>{{ i.subcategory }}</td>
+                                                <td>{{ i.price }}</td>
+                                                <td>{{ i.color }}</td>
+                                                <td>{{ i.size }}</td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
