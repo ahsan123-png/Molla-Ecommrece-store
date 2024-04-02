@@ -25,7 +25,7 @@ def homeDashboard(request):
         latest_orders = Order.objects.all().order_by('-order_date')[:5]
         customer_ids = [order.customer_id for order in latest_orders]
         customers = UserEx.objects.filter(id__in=customer_ids)
-
+        latest_messages = Contact.objects.order_by('-message_at')[:4]
         #unread and read notifications
         unread_notifications = Notification.objects.filter(is_read=False)
         notifications_count = unread_notifications.count()
@@ -35,6 +35,7 @@ def homeDashboard(request):
             'total_revenue': total_revenue,
             'today_revenue': today_revenue,
             "latest_orders" : latest_orders,
+            "latest_messages" : latest_messages,
             "customers" : customers,
             'unread_notifications': unread_notifications,
             'notifications_count': notifications_count,
