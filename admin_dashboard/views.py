@@ -7,7 +7,7 @@ from product.models import Product
 from order.models import Notification, Order
 from django.contrib.auth.decorators import login_required
 
-from users.models import UserEx
+from users.models import Contact, UserEx
 # Create your views here.
 def dashboard(request):
     return render(request,"dashboard.html")
@@ -66,7 +66,21 @@ def adminRegister(request):
     return render (request,"admin/signup.html")
 # ==== admin forms ========
 def adminForms(request):
-    return render (request,"admin/form.html")
+    contactData=Contact.objects.all()
+    conData=[]
+    for data in contactData:
+        info={
+            "name" : data.cusName,
+            "email" : data.cusEmail,
+            "phone" : data.cusPhone,
+            "subject" : data.cusSubject,
+            "message" : data.cusMessage,
+        }
+        conData.append(info)
+    context={
+        "data" : conData
+    }
+    return render (request,"admin/contact_messages.html" , context)
 # ==== admin charts ========
 def adminChart(request):
     return render (request,"admin/chart.html")

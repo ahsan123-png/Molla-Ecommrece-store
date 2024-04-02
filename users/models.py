@@ -47,3 +47,14 @@ class UserEx(User):
 
     def phone_number(self):
         return f"+{self.phone_no}"
+    
+# ==== contact model ====
+class Contact(models.Model):
+    cusName=models.CharField(max_length=50)
+    cusEmail=models.EmailField(max_length=255,
+                                unique=False,
+                                blank=False,
+                                null=False,)
+    cusPhone=models.CharField(max_length=50,null=False,blank=False)
+    cusSubject=models.CharField(max_length=100,blank=False,null=False)
+    cusMessage=models.CharField(max_length=300,blank=False,null=False)

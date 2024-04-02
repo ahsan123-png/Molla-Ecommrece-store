@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 #======== models & serializer =========
-from .models import UserEx
+from .models import Contact, UserEx
 from .serializers import UserSerializer
 # =======================================
 def home(request):
@@ -198,6 +198,20 @@ def about(request):
     return render(request,"about.html")
 
 def contact(request):
+    if request.method == "POST":
+        name=request.POST.get("name")
+        phone=request.POST.get("phone")
+        email=request.POST.get("email")
+        subject=request.POST.get("subject")
+        message=request.POST.get("message")
+        userContact=Contact.objects.create(
+            cusName=name,
+            cusEmail=email,
+            cusPhone=phone,
+            cusSubject=subject,
+            cusMessage=message
+        )
+        userContact.save()
     return render(request,"contact.html")
 
 def faq(request):
