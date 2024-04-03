@@ -1,5 +1,7 @@
 import json
+from datetime import datetime
 from django.core.paginator import Paginator
+from order.models import Notification
 from product.models import Product , ProductPicture
 from product.serializers import ProductPictureSerializer,ProductSerializer
 from typing import Any
@@ -10,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 #======== models & serializer =========
-from .models import UserEx
+from .models import Contact, UserEx
 from .serializers import UserSerializer
 # =======================================
 def home(request):
@@ -198,6 +200,26 @@ def about(request):
     return render(request,"about.html")
 
 def contact(request):
+    if request.method == "POST":
+        name=request.POST.get("name")
+        phone=request.POST.get("phone")
+        email=request.POST.get("email")
+        subject=request.POST.get("subject")
+        message=request.POST.get("message")
+        userContact=Contact.objects.create(
+            cusName=name,
+            cusEmail=email,
+            cusPhone=phone,
+            cusSubject=subject,
+            cusMessage=message
+        )
+        userContact.save()
+        Notification.objects.create(
+            message=f'New contact message from {name}: {message}',
+            type='MESSAGE',
+            created_at=datetime.now(),
+            is_read=False
+        )
     return render(request,"contact.html")
 
 def faq(request):

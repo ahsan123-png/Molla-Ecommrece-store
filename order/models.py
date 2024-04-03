@@ -50,3 +50,19 @@ class ShipmentAddress(models.Model):
     payment_method = models.CharField(max_length=30 , null=True,blank=True)
     email = models.EmailField()
     additional_note = models.TextField(blank=True)
+
+# creating model for notifications
+
+class Notification(models.Model):
+    MESSAGE = 'Message'
+    ORDER = 'Order'
+
+    NOTIFICATION_TYPES = [
+        (MESSAGE, 'Message'),
+        (ORDER, 'Order'),
+    ]
+
+    message = models.TextField()
+    type = models.CharField(max_length=10, choices=NOTIFICATION_TYPES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
