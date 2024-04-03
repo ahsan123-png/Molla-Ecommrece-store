@@ -27,8 +27,11 @@ def homeDashboard(request):
         customers = UserEx.objects.filter(id__in=customer_ids)
         latest_messages = Contact.objects.order_by('-message_at')[:4]
         #unread and read notifications
-        unread_notifications = Notification.objects.filter(is_read=False)
-        notifications_count = unread_notifications.count()
+        unread_notifications = Notification.objects.filter(type="Order" ,is_read=False)
+        notifications_count = unread_notifications.filter(type="Order", is_read=False).count()
+        unreadMassageNotifications = Notification.objects.filter(type="MESSAGE", is_read=False)
+        massageNotifications = Notification.objects.filter(type="MESSAGE", is_read=False).count()
+        print(massageNotifications)
         context = {
             'total_sales': total_sales,
             'today_sales': today_sales,
@@ -39,6 +42,8 @@ def homeDashboard(request):
             "customers" : customers,
             'unread_notifications': unread_notifications,
             'notifications_count': notifications_count,
+            'unreadMassageNotifications': unreadMassageNotifications,
+            'massageNotifications': massageNotifications,
         }
         return render(request, 'admin/homeadmin.html' , context)
     else:

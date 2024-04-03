@@ -11,3 +11,9 @@ def order_notification(sender, instance, created, **kwargs):
             type=Notification.ORDER,
             created_at=timezone.now()
         )
+    else:
+        Notification.objects.create(
+            message='New customer message',
+            type=Notification.MESSAGE,
+            created_at=timezone.now()
+        )

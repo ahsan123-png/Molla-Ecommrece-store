@@ -1,5 +1,7 @@
 import json
+from datetime import datetime
 from django.core.paginator import Paginator
+from order.models import Notification
 from product.models import Product , ProductPicture
 from product.serializers import ProductPictureSerializer,ProductSerializer
 from typing import Any
@@ -212,6 +214,12 @@ def contact(request):
             cusMessage=message
         )
         userContact.save()
+        Notification.objects.create(
+            message=f'New contact message from {name}: {message}',
+            type='MESSAGE',
+            created_at=datetime.now(),
+            is_read=False
+        )
     return render(request,"contact.html")
 
 def faq(request):
