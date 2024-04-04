@@ -1,0 +1,15 @@
+what is signal and why we use signals in django and how it works
+* What is a Signal:
+
+In simple terms, a signal is a dispatcher or messenger in Django that carries information about events or actions that have occurred.
+
+* Why Use Signals in Django:
+Signals are commonly used for tasks such as sending emails upon user registration, updating related models when a particular model instance is saved, or performing certain actions after a user logs in or logs out.
+
+* How Signals Work:
+
+Django provides a built-in signals framework that allows you to define signals and connect them to signal handlers (also known as receivers).
+A signal sender is an object that sends a signal when a specific event occurs, such as saving a model instance.
+A signal receiver is a function that gets executed when the signal is sent. Receivers are connected to signals using decorators or connect methods.
+When a sender sends a signal, all connected receivers are called one by one, and they can perform their designated tasks or actions.
+Signals use the publish-subscribe pattern, where the sender is the publisher (sends messages) and the receiver is the subscriber (listens for messages). 
