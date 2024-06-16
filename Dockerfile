@@ -1,4 +1,5 @@
-# Use an official Python runtime as a parent image
+# Dockerfile
+
 FROM python:3.11
 
 # Set the working directory in the container
@@ -18,7 +19,7 @@ ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=mollo_backend.settings
 
 # Collect static files
-RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput --verbosity 2
 
 # Run database migrations
 RUN python manage.py migrate
