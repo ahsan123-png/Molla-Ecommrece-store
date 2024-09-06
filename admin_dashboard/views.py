@@ -14,8 +14,6 @@ def dashboard(request):
 # ======== access to dashboard  admin =====
 @login_required
 def homeDashboard(request):
-    if not request.user.is_authenticated:
-        return redirect('admin_login')
     if request.user.is_superuser:
         total_sales = Order.objects.count()
         today_date = date.today()
