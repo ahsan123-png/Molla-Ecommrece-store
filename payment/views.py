@@ -22,7 +22,6 @@ def payment(request):
         if not subtotal:
             messages.error(request, 'Subtotal is missing.')
             return redirect('fail')
-        # Convert subtotal to float
         try:
             subtotal = float(subtotal)
         except ValueError:
@@ -34,7 +33,6 @@ def payment(request):
         except UserEx.DoesNotExist:
             messages.error(request, 'User does not exist.')
             return redirect('fail')
-
         stripe_token = request.POST.get('stripeToken')
         if not stripe_token:
             messages.error(request, 'Missing Stripe token.')
