@@ -17,13 +17,11 @@ class UserEx(User):
     def set_customer_id(self):
             
             stripe.api_key = settings.STRIPE_SECRET_KEY
-            stripe.api_key = 'sk_test_51NwlTxAwV6eRJVXpqA7ErOBGIDwPml63lpJhSNpwMn15qoC2EiTM36DPdVYkiyyyWyRMvnfCNI96CNn3hhty4bQ0003XqePmIT'
-
             try:
                 customer = stripe.Customer.create(
                     phone=self.phone,
                     email=self.email,
-                    name=self.get_full_name(),
+                    name=self.username,
                 )
                 self.customer_id = customer.id
                 self.save()
@@ -32,9 +30,6 @@ class UserEx(User):
                 # You may want to log the error or take other actions as needed
                 # For example: print(f"Stripe Error: {e}")
                 pass
-    
-
-
     #set a function to clean phone no
     def set_phone(self,phone):
         if phone.__contains__(""):

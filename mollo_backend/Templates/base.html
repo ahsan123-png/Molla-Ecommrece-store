@@ -77,7 +77,6 @@
                     </div><!-- End .header-right -->
                 </div><!-- End .container -->
             </div><!-- End .header-top -->
-
             <div class="header-middle sticky-header">
                 <div class="container">
                     <div class="header-left">
@@ -85,11 +84,9 @@
                             <span class="sr-only">Toggle mobile menu</span>
                             <i class="icon-bars"></i>
                         </button>
-
                         <a href={% url "home" %} class="logo">
                             <img src="{% static 'assets/images/logo.png' %}" alt="Molla Logo" width="105" height="25">
                         </a>
-
                         <nav class="main-nav">
                             <ul class="menu">
                                 <li class="megamenu-container active">
@@ -153,6 +150,13 @@
                                 <i class="icon-shopping-cart"></i>
                                 <span class="cart-count">2</span>
                             </a>
+                        {% endif %}
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
                         {% endif %}
                             {% comment %} <div class="dropdown-menu dropdown-menu-right">
                                 <div class="dropdown-cart-products">

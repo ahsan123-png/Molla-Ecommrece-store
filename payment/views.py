@@ -14,12 +14,20 @@ from order.models import Order, ShipmentAddress
 from users.models import UserEx
 stripe.api_key = settings.STRIPE_SECRET_KEY
 # #=========================================
-stripe.api_key = 'sk_test_51NwlTxAwV6eRJVXpqA7ErOBGIDwPml63lpJhSNpwMn15qoC2EiTM36DPdVYkiyyyWyRMvnfCNI96CNn3hhty4bQ0003XqePmIT'  # Replace with your Stripe secret key
+
 # #-------->Card info<----------
 def payment(request):
     if request.method == "POST":
         subtotal = request.POST.get("initial_subtotal")
-        subtotal = float(subtotal)
+        if not subtotal:
+            messages.error(request, 'Subtotal is missing.')
+            return redirect('fail')
+        # Convert subtotal to float
+        try:
+            subtotal = float(subtotal)
+        except ValueError:
+            messages.error(request, 'Invalid subtotal value.')
+            return redirect('fail')
         user = request.user
         try:
             user_ex = UserEx.objects.get(id=user.id)
@@ -27,54 +35,62 @@ def payment(request):
             messages.error(request, 'User does not exist.')
             return redirect('fail')
 
-        credit_card_number = request.POST.get('card_number')
-        expiry_date = request.POST.get('expiry_date')
-        cvv_code = request.POST.get('cvv')
-        exp_date_parts = expiry_date.split('/')
-        if len(exp_date_parts) != 2:
-            return HttpResponseRedirect(reverse('checkout'))
-
-        # Prepare card information for Stripe
-        card_info = {
-            "number": credit_card_number,
-            "exp_month": int(exp_date_parts[0]),
-            "exp_year": int(exp_date_parts[1]),
-            "cvc": cvv_code,
-        }
-
-        # Create a PaymentMethod using the card info
-        try:
-            payment_method = stripe.PaymentMethod.create(
-                type="card",
-                card=card_info
-            )
-        except stripe.error.CardError as e:
-            print(f"Card error: {e}")
+        stripe_token = request.POST.get('stripeToken')
+        if not stripe_token:
+            messages.error(request, 'Missing Stripe token.')
             return redirect('fail')
-        except stripe.error.StripeError as e:
-            print(f"Stripe error: {e}")
+        if not user_ex.customer_id:
+            try:
+                user_ex.set_customer_id()
+            except Exception as e:
+                print(f"Error creating customer: {e}")
+                messages.error(request, 'Failed to create Stripe customer.')
+                return redirect('fail')
+        if not user_ex.customer_id:
+            messages.error(request, 'Stripe customer ID not found.')
             return redirect('fail')
-
-        # Create a PaymentIntent with the PaymentMethod
         try:
             payment_intent = stripe.PaymentIntent.create(
-                amount=int(subtotal * 100),
+                amount=int(subtotal * 100),  # Convert to cents
                 currency="usd",
+                payment_method_data={
+                    "type": "card",
+                    "card": {
+                        "token": stripe_token  # Use the token in card[token]
+                    }
+                },
                 customer=user_ex.customer_id,
-                payment_method=payment_method.id,
-                confirm=True
+                confirm=True,
+                return_url=request.build_absolute_uri(reverse('success'))
             )
         except stripe.error.CardError as e:
             print(f"Card error: {e}")
             return redirect('fail')
+        except stripe.error.RateLimitError as e:
+            print(f"Rate limit error: {e}")
+            return redirect('fail')
+        except stripe.error.InvalidRequestError as e:
+            print(f"Invalid request error: {e}")
+            return redirect('fail')
+        except stripe.error.AuthenticationError as e:
+            print(f"Authentication error: {e}")
+            return redirect('fail')
+        except stripe.error.APIConnectionError as e:
+            print(f"API connection error: {e}")
+            return redirect('fail')
         except stripe.error.StripeError as e:
             print(f"Stripe error: {e}")
+            return redirect('fail')
+        except Exception as e:
+            print(f"Something went wrong: {e}")
             return redirect('fail')
 
         if payment_intent.status == 'succeeded':
-           return redirect("success")
+            return redirect("success")
         else:
             return redirect("fail")
+    else:
+        return redirect("fail")
 
 def success(request):
     if request.method == "GET":

@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
+from django.contrib import messages
 #======== models & serializer =========
 from .models import Contact, UserEx
 from .serializers import UserSerializer
@@ -62,7 +63,8 @@ def register(request):
         password = request.POST.get("password")
         username = email.split('@')[0]
         if UserEx.objects.filter(email=email).exists() or UserEx.objects.filter(phone=phone).exists():
-            return JsonResponse({"error": "User with provided email or phone already exists"}, status=400)
+            messages.error(request, "User with provided email or phone already exists")
+            return redirect("signin")
         user = UserEx.objects.create_user(phone=phone, email=email, password=password, username=username)
         user.set_password(password)
         user.set_customer_id()
@@ -74,12 +76,7 @@ def register(request):
             login(request, user)
             return redirect("home")
         else:
-            return JsonResponse({"error": "Unable to log in the user"}, status=500)
-    else:
-        # Handle unsupported HTTP methods
-        return JsonResponse({"error": f"Method {request.method} is not supported"}, status=405)
-
-
+            return redirect("signin")
 #==== Signin user ====
 @csrf_exempt
 def signin(request):
@@ -103,7 +100,7 @@ def logout_view(request):
         logout(request)
         return redirect('/signin')
 # ========== CUARD Users =============
-# ------>>>>>>> Loading >>>>>>
+# ------>>>>>>> Loading <<<<<<--------
 # ====== Get all Users =======
 @csrf_exempt
 def all_users(request):
