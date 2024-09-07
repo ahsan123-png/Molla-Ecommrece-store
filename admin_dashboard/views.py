@@ -113,7 +113,7 @@ def inventory(request):
 # ===== dashboard tables ======
 def orderList(request):
     if request.method == "GET":
-        orders = Order.objects.all()
+        orders = Order.objects.all().order_by('-order_date')
         order_data = []
         for order in orders:
             customer = order.customer
@@ -132,6 +132,7 @@ def orderList(request):
                 'total_bill': order.whole_total
             }
             order_data.append(order_info)
+            order_data
         context = {
             "order_data": order_data
         }
