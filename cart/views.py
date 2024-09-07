@@ -6,6 +6,7 @@ from product.models import Product
 from users.models import UserEx
 from .models import Cart, Wishlist
 from django.views.decorators.csrf import csrf_exempt
+from users.views import getUserEx
 # ==========================================
 def cart(request):
     if request.method == "GET":
@@ -39,11 +40,9 @@ def addToWishlist(request):
         if not request.user.is_authenticated:
             return redirect('signin')
         user = request.user
-        if isinstance(user, UserEx):  # Check if the user is an instance of UserEx
-            user_ex = user
-        else:
-            # If the user is not an instance of UserEx, try to retrieve the UserEx instance
-            user_ex =UserEx.objects.get(id=user.id)
+        user_ex=getUserEx(user)
+        if not user_ex:
+            return redirect('userNotFound')
         product_id = request.POST.get('product_id')
         color = request.POST.get('color_select')
         size = request.POST.get('size')
@@ -108,12 +107,9 @@ def addProductToCart(request, id):
         try:
             product_item = Product.objects.get(id=id)
             user = request.user
-            if isinstance(user, UserEx):
-                user_ex = user
-            else:
-                user_ex = UserEx.objects.get(id=user.id)
-
-            # Get selected color and size from the request's query string
+            user_ex=getUserEx(user)
+            if not user_ex:
+                return redirect("userNotFound")
             selected_color = request.POST.get('color_select')
             selected_size = request.POST.get('size')
             print(selected_color , selected_size)
@@ -147,6 +143,7 @@ def base(request):
     else:
         wishlist_count = 0
     return render(request, 'base.html', {'wishlist_count': wishlist_count})
+
 # ==== delete product from cart ====
 @csrf_exempt
 def removeFromCart(request, id):
@@ -166,3 +163,6 @@ def removeFromWishlist(request, id):
         return JsonResponse({'message': 'Product removed successfully from wishlist'}, status=200)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+
+    

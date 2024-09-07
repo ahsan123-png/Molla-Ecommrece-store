@@ -2,7 +2,7 @@
 
 from django.urls import path
 from . import views  # Import the home view
-
+from . import *
 urlpatterns = [
     path('', views.home, name='home'),  # Add a URL pattern for the home view
     path('signin', views.signin, name='signin'), 
@@ -13,6 +13,8 @@ urlpatterns = [
     path('faq', views.faq, name='faq'), 
     path('profile', views.profile, name='profile'), 
     path('coming_soon', views.coming_soon, name='coming_soon'), 
+    path('404_Not_found', views.userNotFound, name='userNotFound'), 
+
 #========== curd api's =============
     path('all/users', views.all_users, name='all_users'), 
     path('<int:id>/get/user', views.get_user, name='get_user'), 
