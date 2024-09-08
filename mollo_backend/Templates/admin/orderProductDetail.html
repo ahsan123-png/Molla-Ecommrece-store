@@ -1,0 +1,62 @@
+
+{% extends "admin/adminbase.html" %}
+{% load static %}
+{% block body %}
+    <style>
+        .container-xxl {
+            max-width: 2000px;
+        }
+        .containers {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 60%;
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 5%;
+            margin-left: 10%;
+        }
+        .form-field {
+            width: 50%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .label {
+            font-weight: bold;
+            margin-bottom: .5rem;
+            display: block;
+        }
+    </style>
+    <div class="containers">
+        <h1 style="width: 100%; text-align: center;">Product Details</h1>
+        <div class="form-field">
+            <span class="label">Product Name:</span>
+            <div class="values">{{ productInfo.product_name }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Brand:</span>
+            <div class="value">{{ productInfo.brand }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Description:</span>
+            <div class="value">{{ productInfo.description }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Catagery:</span>
+            <div class="value">{{ productInfo.category }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Sub Catagery:</span>
+            <div class="value">{{ productInfo.subcategory }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Product Type:</span>
+            <div class="value">{{ productInfo.productType }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Price Per Unit:</span>
+            <div class="value">{{ productInfo.price }}</div>
+        </div>
+    </div>
+{% endblock body %}

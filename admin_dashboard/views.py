@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
 from product.models import Inventory, Product, ProductVariant
-from order.models import Notification, Order
+from order.models import Notification, Order, ShipmentAddress
 from django.contrib.auth.decorators import login_required
 
 from users.models import Contact, UserEx
@@ -119,7 +119,7 @@ def orderList(request):
             customer = order.customer
             user_info = UserEx.objects.get(id=customer.id)
             user_email = user_info.email
-
+            address = ShipmentAddress.objects.filter(customer=customer).first()
             order_info = {
                 'order_id': order.id,
                 'order_date': order.order_date,
@@ -129,7 +129,8 @@ def orderList(request):
                 'color': order.color,
                 'size': order.size,
                 'product_total': order.subtotal,
-                'total_bill': order.whole_total
+                'total_bill': order.whole_total,
+                'address_id': address.id if address else None
             }
             order_data.append(order_info)
             order_data
@@ -137,6 +138,22 @@ def orderList(request):
             "order_data": order_data
         }
         return render(request, "admin/table.html", context)
+    
+#====== get product information =======
+def productDetails(request, product_id):
+    productInfo = Product.objects.get(id=product_id)
+    context = {
+        "productInfo": productInfo
+    }
+    return render(request, "admin/orderProductDetail.html", context)
+#====== get order adress =======
+def addressDetail(request, address_id):
+    address = ShipmentAddress.objects.get(id=address_id)
+
+    context = {
+        "address": address
+    }
+    return render(request, "admin/orderAddress.html", context)
 # ======= products and order counts ========
 @csrf_exempt
 def productCounts(request):

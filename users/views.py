@@ -218,7 +218,18 @@ def contact(request):
             is_read=False
         )
     return render(request,"contact.html")
-
+#=== get user instance =====
+def getUserEx(user):
+    if isinstance(user, UserEx):
+        return user
+    else:
+        try:
+            return UserEx.objects.get(id=user.id)
+        except UserEx.DoesNotExist:
+            return None
+    
+def userNotFound(request):
+    return render(request,'404.html')
 def faq(request):
     return render(request,"faq.html")
 
