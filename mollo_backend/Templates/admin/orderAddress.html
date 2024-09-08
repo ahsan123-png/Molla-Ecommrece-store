@@ -1,0 +1,93 @@
+
+{% extends "admin/adminbase.html" %}
+{% load static %}
+{% block body %}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container-xxl {
+            max-width: 2000px;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .containers {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 60%;
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 25%;
+            margin-left: 10%;
+        }
+        .form-field {
+            width: 50%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .label {
+            font-weight: bold;
+            margin-bottom: .5rem;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="containers">
+        <h1 style="width: 100%; text-align: center;">Address Detail</h1>
+        <div class="form-field">
+            <span class="label">First Name:</span>
+            <div class="values">{{ address.first_name }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Last Name:</span>
+            <div class="value">{{ address.last_name }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Street Address:</span>
+            <div class="value">{{ address.street_address }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">City:</span>
+            <div class="value">{{ address.city }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">State:</span>
+            <div class="value">{{ address.state }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Postal Code:</span>
+            <div class="value">{{ address.postal_code }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Country:</span>
+            <div class="value">{{ address.country }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Phone Number:</span>
+            <div class="value">{{ address.phone_number }}</div>
+        </div>
+        <div class="form-field">
+            <span class="label">Email:</span>
+            <div class="value">{{ address.email }}</div>
+        </div>
+        <div class="form-field" style="width: 100%;">
+            <span class="label">Additional Note:</span>
+            <div class="value">{{ address.additional_note }}</div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+    
+{% endblock body %}

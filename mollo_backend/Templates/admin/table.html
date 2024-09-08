@@ -22,13 +22,14 @@
                                             <tr>
                                                 <th scope="col">Order Id</th>
                                                 <th scope="col">Order Date</th>
-                                                <th scope="col">Order Product ID</th>
                                                 <th scope="col">Customer Email</th>
                                                 <th scope="col">Quantity</th>
                                                 <th scope="col">Color</th>
                                                 <th scope="col">Size</th>
                                                 <th scope="col">Product Total</th>
                                                 <th scope="col">Total Bill</th>
+                                                <th scope="col">Product Details</th>
+                                                <th scope="col">Complete Address</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -36,13 +37,18 @@
                                             <tr>
                                                 <td>{{ order_info.order_id }}</td>
                                                 <td>{{ order_info.order_date }}</td>
-                                                <td>{{ order_info.ordered_product_id }}</td>
                                                 <td>{{ order_info.customer_email }}</td>
                                                 <td>{{ order_info.quantity }}</td>
                                                 <td>{{ order_info.color }}</td>
                                                 <td>{{ order_info.size }}</td>
                                                 <td>{{ order_info.product_total }}</td>
                                                 <td>{{ order_info.total_bill }}</td>
+                                                <td><a href="{% url "productDetails"  order_info.ordered_product_id %}">View More</a></td>
+                                                <td>{% if order_info.address_id %}
+                                                    <a href="{% url 'address_detail' order_info.address_id %}">view More</a>
+                                                {% else %}
+                                                    No Address
+                                                {% endif %}</td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
