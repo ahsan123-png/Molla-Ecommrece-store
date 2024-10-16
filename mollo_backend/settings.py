@@ -1,24 +1,10 @@
 from pathlib import Path
 import os
 from decouple import config
-
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = config('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = "_jn6(j0+mu)a*dx*0n5^djms=uy5unlh4#o4%+-!5^#5!u(zqh"
 DEBUG = True
-
 ALLOWED_HOSTS = ["*"]
-
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -69,20 +55,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mollo_backend.wsgi.application'
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -97,39 +75,19 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
 STATICFILES_DIRS = [
     BASE_DIR / 'mollo_backend' / 'static'
 ]
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Stripe settings
-# STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
-# STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
-
 STRIPE_SECRET_KEY='sk_test_51Pw4qzEnQNLsnCj1NLNJftCJaYhNo7ZYB2YntOJsO4OlQsscEdmZSCTRPlqBnnkFTKbs94g0bWQMXBsnizBzXdhh00lvuKtAqu'
-
 INTERNAL_IPS = [
     # ...
     "127.0.0.1",
