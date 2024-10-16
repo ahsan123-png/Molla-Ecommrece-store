@@ -1,4 +1,16 @@
 # Byte-compiled / optimized / DLL files
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore specific cache files in mollo_backend
+mollo_backend/__pycache__/settings.cpython-311.pyc
+
+# Ignore all __pycache__ directories and .pyc files
+**/__pycache__/
+*.pyc
+
 *__pycache__/
 **__pycache__/
 *.py[cod]
@@ -238,4 +250,7 @@ admin_dashboard/__pycache__/views.cpython-311.pyc
 *.pyc
 *.pyc
 *.pyc
+*.pyc
+# Ignore Python cache files
+__pycache__/
 *.pyc
