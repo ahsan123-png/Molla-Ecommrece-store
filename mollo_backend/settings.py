@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-from decouple import config
+# from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "_jn6(j0+mu)a*dx*0n5^djms=uy5unlh4#o4%+-!5^#5!u(zqh"
 DEBUG = True
@@ -32,7 +32,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', 
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'mollo_backend.urls'
