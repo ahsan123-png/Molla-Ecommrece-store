@@ -1,3 +1,11 @@
-from django.db import models
+from django.contrib import admin
+from django.apps import apps
 
-# Create your models here.
+# Get all models in the current app
+app = apps.get_app_config('admin_dashboard')  # ← Replace 'myapp' with your actual app name
+
+for model in app.get_models():
+    try:
+        admin.site.register(model)
+    except admin.sites.AlreadyRegistered:
+        pass 
