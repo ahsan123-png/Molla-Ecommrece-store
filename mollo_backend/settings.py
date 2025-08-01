@@ -6,6 +6,7 @@ SECRET_KEY = "_jn6(j0+mu)a*dx*0n5^djms=uy5unlh4#o4%+-!5^#5!u(zqh"
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -20,7 +21,9 @@ INSTALLED_APPS = [
     'order',
     'stripe',
     'blog',
-    "debug_toolbar"
+    "debug_toolbar",
+    "tailwind",
+    "Molla",
     
 ]
 MIDDLEWARE = [
@@ -93,4 +96,16 @@ INTERNAL_IPS = [
     # ...
 ]
 
+#We are setting jezzmin and tailwind onto our porjet to customize the django defult admin dashboard 
+
+JAZZMIN_SETTINGS = {
+    "site_title": "MOlla Inventory Admin",
+    "site_header": "Molla Admin",
+    "welcome_sign": "Welcome to the Admin Dashboard",
+    "show_sidebar": True,
+
+}
+
+TAILWIND_APP_NAME = 'Molla'
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
