@@ -12,6 +12,8 @@ urlpatterns = [
     path('get_product/<int:id>', views.getProduct, name='getProduct'), 
     path('update/<int:id>', views.updateProduct, name='updateProduct'), 
     path('delete/<int:id>', views.deleteProduct, name='deleteProduct'), 
+    # django form url work with admin panal
+    path('create/', views.create_product, name='create_product')
 ]
 
 

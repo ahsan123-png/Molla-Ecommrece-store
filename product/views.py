@@ -168,3 +168,18 @@ def updateProduct(request, id):
 # =========== delete Blog ================
 def deleteProduct(request,id):
     pass
+# ================ Create Product ============
+from django.shortcuts import render, redirect
+from .forms import ProductForm
+from django.contrib import messages
+
+def create_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Product created successfully!")
+            return redirect('create_product')
+    else:
+        form = ProductForm()
+    return render(request, 'products/create_product.html', {'form': form})
